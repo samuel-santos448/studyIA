@@ -23,3 +23,4 @@ body.lesson-focused{padding-left:0;padding-bottom:0;transition:none}
 .lesson-focused .back-button span{display:inline}
 .lesson-focused .back-button{padding:6px 12px}
 .language-picker{display:flex;align-items:center;gap:8px;font-size:12px;border:0;padding:0;margin:0;background:transparent}.language-picker select{max-width:120px;padding:8px;border:1px solid #badbb7;border-radius:10px;background:#fafbf8;color:#164574}.language-picker span:empty{display:none}
+.logout-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border:1px solid #badbb7;border-radius:10px;background:#fafbf8;color:#164574;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.logout-button:hover{background:#e8f3e6;border-color:#164574}.logout-button[hidden]{display:none!important}.logout-button:disabled{opacity:.6;cursor:wait}
