@@ -4,7 +4,7 @@ Aplicativo de aprendizado de idiomas com aulas estruturadas e um professor de in
 
 ## Estado do projeto
 
-Protótipo disponível com duas unidades de inglês A1, exemplos em áudio, exercícios, conversa guiada e gravação local de voz. O progresso é salvo no navegador. A integração com professor de IA ainda não está implementada.
+Protótipo disponível com duas unidades de inglês A1, exemplos em áudio, exercícios, conversa guiada e gravação local de voz. O progresso é salvo no navegador. Integração por texto com professor de IA implementada para uso local, aguardando configuração e teste com credenciais reais.
 
 ## Objetivo
 
@@ -29,6 +29,8 @@ A primeira interface será responsiva e acessível pelo navegador em celulares e
 - [Plano de desenvolvimento e critérios de conclusão](docs/roadmap.md)
 
 ## Desenvolvimento
+
+Para usar o professor de IA, siga [a configuração local](docs/ai-setup.md). O servidor requer Node.js 22.9 ou superior; execute `npm start`. Os testes do servidor usam `npm test` e não fazem chamadas reais à OpenAI. A versão estática continua funcionando sem o professor de IA.
 
 A arquitetura e as dependências ainda serão escolhidas. Nenhuma chave de IA deve ser incluída no código ou enviada ao GitHub. As chamadas autenticadas ao provedor deverão passar por um servidor.
 

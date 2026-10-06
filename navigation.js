@@ -55,7 +55,7 @@
   while (node) { const next = node.nextSibling; voice.append(node); node = next; } hr.remove();
   const chat = document.createElement('div');
   ['#chat-log','#chat-form','#chat-tip','#chat-restart'].forEach(selector => chat.append(conversation.querySelector(selector)));
-  submodules(conversation, [['Por texto', [chat]], ['Minha voz', [voice]]]);
+  submodules(conversation, [['Por texto', [chat]], ['Minha voz', [voice]], ['Professor IA', [document.querySelector('#ai-panel')]]]);
   sidebar.querySelector('nav a[href="#lesson"]').href = '#units';
   const modules = {home, units, lesson, numbers, studio, conversation, settings};
   const titles = {home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',studio:'Estúdio de prática',conversation:'Conversação guiada',settings:'Progresso e preferências'};
