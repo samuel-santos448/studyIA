@@ -105,7 +105,7 @@ Abra index.html em um navegador moderno. Não exige instalação de dependência
 Interface e fluxos principais verificados no Chrome automatizado. Gravação com microfone físico e conversas com IA real ainda precisam de validação.
 # Curso ampliado — lotes disponíveis
 
-O catálogo contém 150 aulas em cada nível A1, A2 e B1, totalizando 450 aulas de inglês, em 25 temas por nível com seis aulas cada. Cada aula apresenta seis termos do tema, exemplo bilíngue com leitura sintetizada, dois exercícios e uma prática escrita. O catálogo tem busca e páginas de oito aulas. B2, C1 e C2 permanecem sinalizados como em preparação.
+O catálogo contém 150 aulas em cada nível A1, A2, B1 e B2, totalizando 600 aulas de inglês, em 25 temas por nível com seis aulas cada. Cada aula apresenta seis termos do tema, exemplo bilíngue com leitura sintetizada, dois exercícios e uma prática escrita. O catálogo tem busca e páginas de oito aulas. C1 e C2 permanecem sinalizados como em preparação.
 
 O progresso é separado por aula e etapa, salvo localmente e incluído no backup v4, com migração dos backups anteriores. A prática escrita registra autoavaliação após uma checagem simples de vocabulário; ela não avalia fluência. O professor IA recebe o contexto da aula por um ID validado no servidor, quando a integração está configurada.
 
@@ -115,3 +115,5 @@ O lote A2 tem exemplos próprios, incluindo relatos no passado, planos, compara�
 
 
 O lote B1 acrescenta experiências, opiniões, narrativas, colaboração e resolução de problemas. Seus roteiros pedem motivos, exemplos e perguntas de acompanhamento. A conferência escrita verifica termos completos, não fragmentos de outras palavras, e segue sendo uma ajuda lexical sem avaliação de fluência.
+
+O lote B2 trabalha argumentos, concessões, negociação, hipóteses e adequação de registro. A conferência lexical aceita algumas flexões regulares e irregulares, mantendo a comparação por palavras completas. Esse recurso não interpreta sentido nem verifica a correção gramatical da resposta. Os exemplos e desafios de B2 são próprios do lote, sem cópia dos níveis anteriores.
