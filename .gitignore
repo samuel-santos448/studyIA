@@ -20,6 +20,7 @@ data/local-dev/
 verify-home-brand.cjs
 verify-teacher.cjs
 verify-access-menu.cjs
+verify-school-elements.cjs
 recordings/
 *.log
 
