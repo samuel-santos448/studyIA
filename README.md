@@ -40,11 +40,17 @@ A importação aceita até 1 MB, apresenta um resumo e pede confirmação antes 
 
 As 900 aulas são **conteúdo gerado, sem revisão pedagógica independente**. Os rótulos A1–C2 orientam a organização e os roteiros; a contagem não comprova cobertura integral do CEFR nem certifica proficiência. Os exercícios de reconhecimento são curtos e precisam de aprofundamento pedagógico, especialmente nos níveis avançados.
 
-O áudio depende das vozes do navegador. Não há avaliação automática de pronúncia, conversa bidirecional por voz com IA, vídeos produzidos por aula ou GIFs incorporados. O microfone físico e a integração com o provedor real ainda precisam de validação.
+O áudio depende das vozes do navegador. A avaliação automática de pronúncia nas provas exige Azure Speech configurado. Ainda não há conversa bidirecional por voz com IA, vídeos produzidos por aula ou GIFs incorporados. O microfone físico e a integração com o provedor real ainda precisam de validação.
 
 Execute `npm test` para os testes de conteúdo, gabarito, dados, backup e servidor. A verificação desta expansão também abriu as 900 rotas no Chrome, concluiu uma aula por nível e exportou/restaurou progresso nas 900 aulas. Consulte [o registro da expansão](docs/course-status.md).
 
 Aplicativos distribuídos nas lojas iOS, Android, Windows e macOS, contas, pagamentos e hospedagem multiusuário permanecem no plano de produto. Este servidor serve desenvolvimento local.
+
+## Provas e progressão
+
+O curso libera uma aula por vez e exige prova de dez questões a cada dez aulas. Aprovação: 80%. O diagnóstico é obrigatório a partir de A2. Backup v5 preserva notas e jornada. A estrutura OIDC/Entra está preparada, mas login corporativo permanece desativado. Regras, configuração e limites estão em [jornada e identidade](docs/assessment-and-identity.md).
+
+Validação desta etapa: 45 testes Node e fluxo no Chrome de bloqueio, prova com 80%, gravação WAV com avaliador simulado, restauração do backup e diagnóstico. O serviço real de áudio e a validade pedagógica do diagnóstico ainda precisam de validação.
 
 ## Documentação
 

@@ -10,15 +10,15 @@
   intro?.remove();
   const home = document.createElement('section'); home.id = 'home'; home.className = 'module';
   main.prepend(home); home.append(hero, dashboard);
-  hero.querySelector('a').href = '#lesson';
+  hero.querySelector('a').href = '#catalog';
   const cards = document.createElement('div'); cards.className = 'module-cards';
-  cards.innerHTML = `<a href="#lesson"><span class="tile-icon">Aa</span><small>APRENDA</small><h3>Sua primeira aula</h3><p>Exemplos e exercícios para se apresentar.</p><strong>Entrar na aula ↗</strong></a><a href="#studio"><span class="tile-icon orange">♫</span><small>EXPLORE</small><h3>Estúdio de prática</h3><p>Áudio, palavras e uma conversa animada.</p><strong>Abrir estúdio ↗</strong></a><a href="#conversation"><span class="tile-icon pink">✦</span><small>PRATIQUE</small><h3>Vamos conversar</h3><p>Pratique por texto ou grave sua voz.</p><strong>Iniciar prática ↗</strong></a>`;
+  cards.innerHTML = `<a href="#catalog"><span class="tile-icon">Aa</span><small>APRENDA</small><h3>Seu curso por etapas</h3><p>Exemplos e exercícios para se apresentar.</p><strong>Entrar na aula ↗</strong></a><a href="#studio"><span class="tile-icon orange">♫</span><small>EXPLORE</small><h3>Estúdio de prática</h3><p>Áudio, palavras e uma conversa animada.</p><strong>Abrir estúdio ↗</strong></a><a href="#conversation"><span class="tile-icon pink">✦</span><small>PRATIQUE</small><h3>Vamos conversar</h3><p>Pratique por texto ou grave sua voz.</p><strong>Iniciar prática ↗</strong></a>`;
   home.append(cards);
   const review=document.querySelector('#review');
   const reviewCard=document.createElement('article');reviewCard.className='review-home';reviewCard.innerHTML='<div><h3>Reforce o que você aprendeu</h3><p id="home-review-count">Nenhuma revisão pendente</p></div><a href="#review" class="button secondary">Revisar agora →</a>';home.append(reviewCard);
   const numbers = document.querySelector('#numbers');
   const units = document.createElement('section'); units.id = 'units'; units.className = 'module';
-  units.innerHTML = `<p class="eyebrow">INGLÊS / NÍVEL A1</p><h2>Escolha seu próximo passo.</h2><p>As unidades estão disponíveis para estudar e revisar no seu ritmo.</p><div class="unit-list"><a class="unit-link" href="#lesson"><div><small>UNIDADE 01</small><h3>Hello, world!</h3><p>Saudações e apresentação pessoal</p></div><strong class="unit-count" id="unit-one-count"></strong></a><a class="unit-link" href="#numbers"><div><small>UNIDADE 02</small><h3>What time is it?</h3><p>Números de 1 a 12 e horários exatos</p></div><strong class="unit-count" id="unit-two-count"></strong></a></div>`;
+  units.innerHTML = `<p class="eyebrow">INGLÊS / NÍVEL A1</p><h2>Seu curso e práticas complementares.</h2><p>O curso completo segue aulas e provas em sequência. As atividades rápidas abaixo são práticas complementares.</p><div class="unit-list"><a class="unit-link" href="#lesson"><div><small>UNIDADE 01</small><h3>Hello, world!</h3><p>Saudações e apresentação pessoal</p></div><strong class="unit-count" id="unit-one-count"></strong></a><a class="unit-link" href="#numbers"><div><small>UNIDADE 02</small><h3>What time is it?</h3><p>Números de 1 a 12 e horários exatos</p></div><strong class="unit-count" id="unit-two-count"></strong></a></div>`;
   main.append(units);const courseLink=document.createElement('a');courseLink.href='#catalog';courseLink.className='button';courseLink.textContent='Explorar curso completo →';units.querySelector('h2').after(courseLink);
   const vocabulary=document.querySelector('#vocabulary');const vocabularyLink=document.createElement('a');vocabularyLink.href='#vocabulary';vocabularyLink.className='button secondary';vocabularyLink.textContent='Explorar vocabulário e cartões →';units.querySelector('h2').after(vocabularyLink);
   const cafe=document.querySelector('#cafe');const cafeLink=document.createElement('a');cafeLink.className='unit-link';cafeLink.href='#cafe';cafeLink.innerHTML='<div><small>UNIDADE 03</small><h3>A coffee, please.</h3><p>Pedidos, agradecimentos e preços</p></div><strong class="unit-count" id="unit-cafe-count"></strong>';units.querySelector('.unit-list').append(cafeLink);
@@ -65,13 +65,13 @@
   sidebar.querySelector('nav a[href="#lesson"]').href = '#units';
   const reviewLink=document.createElement('a');reviewLink.href='#review';reviewLink.innerHTML='↻ <span>Revisão</span>';sidebar.querySelector('nav a[href="#settings"]').before(reviewLink);
   const catalog=document.querySelector("#catalog"),learning=document.querySelector("#learning");
-  const modules = {catalog,learning,home, units, lesson, numbers, cafe, vocabulary, studio, conversation, review, settings};
-  const titles = {catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
+  const modules = {exam:document.querySelector("#exam"),catalog,learning,home, units, lesson, numbers, cafe, vocabulary, studio, conversation, review, settings};
+  const titles = {exam:'Sua avaliação',catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
   function route() {
     const key = location.hash.slice(1).split('?')[0] || 'home'; const active = modules[key] ? key : 'home';
     pauseScene(); document.querySelectorAll('video,audio').forEach(media => media.pause()); document.dispatchEvent(new Event('studyia:navigate'));
     Object.entries(modules).forEach(([id, el]) => { el.hidden = id !== active; });
-    const navigationKey = ['catalog','learning','lesson','numbers','cafe','vocabulary'].includes(active) ? 'units' : active;
+    const navigationKey = ['exam','catalog','learning','lesson','numbers','cafe','vocabulary'].includes(active) ? 'units' : active;
     sidebar.querySelectorAll('nav a').forEach(link => { if (link.hash === `#${navigationKey}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
     const currentLesson=active==='learning'?StudyCurriculum.get(new URLSearchParams(location.hash.split('?')[1]||'').get('lesson')):null;
     document.querySelector('.level-chip b').textContent=currentLesson?.level||(['catalog','units'].includes(active)?'A1–C2':'A1');
