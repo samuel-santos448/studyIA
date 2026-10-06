@@ -5,3 +5,16 @@
 .sidebar nav a:focus-visible{outline:3px solid #bce7b9;outline-offset:2px}
 .back-button .menu-icon{width:20px;height:20px;flex-basis:20px}
 @media(prefers-reduced-motion:reduce){.menu-icon{transition:none}.sidebar nav a:hover .menu-icon,.sidebar nav a:focus-visible .menu-icon{transform:none}}
+.sidebar{padding-top:18px;padding-bottom:18px}
+.sidebar>.menu-logo-button{max-width:160px;padding:4px}
+.sidebar>#menu-toggle{margin-bottom:10px}
+.sidebar-caption{font-size:8px;letter-spacing:1px;margin:12px 0}
+.sidebar nav{gap:3px}
+.sidebar nav a{min-height:40px;padding:8px 10px;gap:10px;border-radius:10px}
+.sidebar nav a span{font-size:12px}
+.sidebar nav .menu-icon{width:21px;height:21px;flex-basis:21px}
+.menu-collapsed .sidebar{padding-top:18px;padding-bottom:18px}
+.menu-collapsed .menu-logo-button{width:48px;height:48px}
+.menu-collapsed .menu-logo-button img{width:168px;left:-6px;top:-6px}
+@media(max-width:700px){.menu-open .sidebar{padding-top:14px;padding-bottom:14px}.menu-open .sidebar>.menu-logo-button{max-width:150px}.sidebar nav a,.menu-collapsed .sidebar nav a{min-height:44px;padding:9px 10px;gap:10px}.sidebar nav a span,.menu-collapsed .sidebar nav a span{font-size:12px}.menu-collapsed .menu-logo-button{width:42px;height:42px}.menu-collapsed .menu-logo-button img{width:150px;left:-6px;top:-6px}}
+@media(max-height:520px){.sidebar-caption{display:none}.sidebar>.menu-logo-button{max-width:120px}.sidebar,.menu-collapsed .sidebar{padding-top:10px;padding-bottom:10px}.sidebar>#menu-toggle{margin-bottom:8px}.sidebar nav{gap:2px}}
