@@ -24,7 +24,7 @@
   const cafe=document.querySelector('#cafe');const cafeLink=document.createElement('a');cafeLink.className='unit-link';cafeLink.href='#cafe';cafeLink.innerHTML='<div><small>UNIDADE 03</small><h3>A coffee, please.</h3><p>Pedidos, agradecimentos e preços</p></div><strong class="unit-count" id="unit-cafe-count"></strong>';units.querySelector('.unit-list').append(cafeLink);
   function cafeCount(){document.querySelector('#unit-cafe-count').textContent=cafe.querySelector('.quiz-progress').textContent;}document.addEventListener('studyia:progress',cafeCount);cafeCount();
   const trail = dashboard.querySelector('article:last-child');
-  trail.innerHTML = '<small>SUA TRILHA</small><h2>Três unidades para explorar</h2><p>Apresentação · Números e horários · Cafeteria</p><a href="#units" class="button secondary">Ver unidades →</a>';
+  trail.innerHTML = '<small>SUA TRILHA</small><h2>900 aulas para explorar</h2><p>Inglês de A1 a C2 · 150 aulas por nível</p><a href="#catalog" class="button secondary">Explorar meu curso →</a>';
   const lessonBack = document.createElement('a'); lessonBack.href = '#units'; lessonBack.className = 'reset'; lessonBack.textContent = '← Voltar à trilha'; lesson.prepend(lessonBack);
   const numbersBack = lessonBack.cloneNode(true); numbers.prepend(numbersBack);
   function updateUnitCounts() { document.querySelector('#unit-one-count').textContent = document.querySelector('#progress').textContent; document.querySelector('#unit-two-count').textContent = document.querySelector('#numbers-progress').textContent; }
@@ -38,7 +38,7 @@
   settings.id = 'settings'; settings.innerHTML = '<p class="eyebrow">SEU APRENDIZADO</p><h2>Progresso e preferências</h2><p>Seu progresso fica salvo neste navegador. Reiniciar limpa os exercícios da primeira aula.</p>';
   settings.append(document.querySelector('#reset'), document.querySelector('#storage-message')); main.append(settings);
   const sidebar = document.createElement('aside'); sidebar.className = 'sidebar';
-  sidebar.innerHTML = `<a class="brand" href="#home">Study<span>IA</span><span class="brand-dot">✦</span></a><p class="sidebar-caption">SEU ESPAÇO DE APRENDIZADO</p><nav aria-label="Módulos"><a href="#home">⌂ <span>Início</span></a><a href="#lesson">▤ <span>Aula</span></a><a href="#studio">♫ <span>Estúdio</span></a><a href="#conversation">◌ <span>Conversação</span></a><a href="#settings">⚙ <span>Preferências</span></a></nav><div class="sidebar-note"><strong>Um passo por dia.</strong><p>Pequenas práticas, novas possibilidades.</p><span>INGLÊS · A1</span></div>`;
+  sidebar.innerHTML = `<a class="brand" href="#home">Study<span>IA</span><span class="brand-dot">✦</span></a><p class="sidebar-caption">SEU ESPAÇO DE APRENDIZADO</p><nav aria-label="Módulos"><a href="#home">⌂ <span>Início</span></a><a href="#lesson">▤ <span>Aula</span></a><a href="#studio">♫ <span>Estúdio</span></a><a href="#conversation">◌ <span>Conversação</span></a><a href="#settings">⚙ <span>Preferências</span></a></nav><div class="sidebar-note"><strong>Um passo por dia.</strong><p>Pequenas práticas, novas possibilidades.</p><span>INGLÊS · A1–C2</span></div>`;
   document.body.prepend(sidebar);
   document.querySelector('header').innerHTML = '<div><small>SEU PRÓXIMO PASSO</small><strong id="module-title">Início</strong></div><span class="level-chip">🇬🇧 Inglês <b>A1</b></span>';
   function submodules(container, items) {
