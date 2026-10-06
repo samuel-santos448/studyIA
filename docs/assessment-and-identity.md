@@ -12,7 +12,7 @@
 
 ## Limites do protótipo
 
-O bloqueio é aplicado na interface e nas rotas do navegador. O progresso continua no localStorage e pode ser alterado por quem controla o dispositivo. Não é uma barreira antifraude nem um sistema de provas de produção. Antes da comercialização: persistir progresso por usuário no servidor, registrar tentativas e validar autorização e notas no backend. O endpoint de áudio atual é local, tem limites de tamanho, origem e concorrência, e escolhe a referência no catálogo do servidor. Ele não autentica um aluno.
+Na demonstração sem conta, o bloqueio e progresso são locais. Com PostgreSQL configurado e aluno conectado, etapas, tentativas, notas e pré-requisitos são validados no servidor e isolados por usuário. O endpoint de áudio exige sessão e CSRF quando a empresa está configurada, escolhe a referência no servidor e registra a nota na tentativa atual. O cache e o backup local não substituem a jornada da conta. Isso não elimina acesso ao gabarito estático nem equivale a um ambiente de provas supervisionadas. Consulte [a estrutura da empresa e operação PostgreSQL](postgresql-operations.md).
 
 O currículo gerado e os diagnósticos precisam de revisão pedagógica e validação de dificuldade e representatividade. A prova diagnóstica atual cobre o primeiro bloco do nível, não todas as competências do CEFR.
 

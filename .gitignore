@@ -29,3 +29,5 @@ verify-ui.cjs
 verify-curriculum.cjs
 verify-course-audit.cjs
 verify-assessment.cjs
+.tools/
+verify-company.cjs

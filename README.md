@@ -12,9 +12,10 @@ O progresso registra duas respostas corretas e uma prática escrita autoavaliada
 
 ## Executar
 
-Use Node.js 22.9 ou superior:
+Use Node.js 24 ou superior:
 
 ```sh
+npm ci --ignore-scripts
 npm start
 ```
 
@@ -24,9 +25,9 @@ Para configurar a integração, siga [a configuração local da IA](docs/ai-setu
 
 ## Progresso e backup
 
-Preferências → Progresso mostra as aulas praticadas por nível e as 13 atividades rápidas de introdução. Preferências → Backup exporta perfil, progresso, revisão, favoritos, aparência e histórico de atividades em JSON v4. Backups v1–v3 continuam aceitos.
+Preferências → Progresso mostra as aulas praticadas por nível e as 13 atividades rápidas de introdução. Preferências → Backup exporta perfil, progresso, revisão, favoritos, aparência e histórico de atividades em JSON v5. Backups v1–v4 continuam aceitos.
 
-A importação aceita até 1 MB, apresenta um resumo e pede confirmação antes de substituir dados. Conversas, gravações e credenciais não entram no arquivo. Não há sincronização automática entre dispositivos.
+A importação aceita até 1 MB, apresenta um resumo e pede confirmação antes de substituir dados. Conversas, gravações e credenciais não entram no arquivo. Sem conta, o progresso é local. Com PostgreSQL e conta conectada, o curso e as provas sincronizam pelo servidor; restaurar backup local não substitui as notas da conta.
 
 ## Outros módulos
 
@@ -44,13 +45,21 @@ O áudio depende das vozes do navegador. A avaliação automática de pronúncia
 
 Execute `npm test` para os testes de conteúdo, gabarito, dados, backup e servidor. A verificação desta expansão também abriu as 900 rotas no Chrome, concluiu uma aula por nível e exportou/restaurou progresso nas 900 aulas. Consulte [o registro da expansão](docs/course-status.md).
 
-Aplicativos distribuídos nas lojas iOS, Android, Windows e macOS, contas, pagamentos e hospedagem multiusuário permanecem no plano de produto. Este servidor serve desenvolvimento local.
+Aplicativos distribuídos nas lojas iOS, Android, Windows e macOS, pagamentos e hospedagem multiusuário permanecem no plano de produto. Este servidor serve desenvolvimento local.
 
 ## Provas e progressão
 
 O curso libera uma aula por vez e exige prova de dez questões a cada dez aulas. Aprovação: 80%. O diagnóstico é obrigatório a partir de A2. Backup v5 preserva notas e jornada. A estrutura OIDC/Entra está preparada, mas login corporativo permanece desativado. Regras, configuração e limites estão em [jornada e identidade](docs/assessment-and-identity.md).
 
-Validação desta etapa: 45 testes Node e fluxo no Chrome de bloqueio, prova com 80%, gravação WAV com avaliador simulado, restauração do backup e diagnóstico. O serviço real de áudio e a validade pedagógica do diagnóstico ainda precisam de validação.
+Validação das provas: 45 testes Node e fluxo no Chrome de bloqueio, prova com 80%, gravação WAV com avaliador simulado, restauração do backup e diagnóstico. O serviço real de áudio e a validade pedagógica do diagnóstico ainda precisam de validação.
+
+## Empresa e PostgreSQL
+
+A base para uma empresa inclui configuração do administrador, convites de aluno, login local, sessões, curso individual no servidor e relatório de evolução. O esquema PostgreSQL separa usuários, etapas, tentativas e respostas; transações e restrições impedem notas inconsistentes. Não há fallback para SQLite.
+
+Configure DATABASE_URL e TLS no .env, execute npm run migrate e inicie o servidor. Sem conexão configurada, permanece a demonstração local. A infraestrutura PostgreSQL de produção, alta disponibilidade e backups ainda precisam ser provisionados. Consulte [configuração e operação](docs/postgresql-operations.md).
+
+Validação: 48 testes Node, SQL no motor PostgreSQL embarcado de teste e fluxo Chrome com administrador, convite, isolamento, sincronização e resistência à alteração do cache. O workflow também executa testes com PostgreSQL 18 separado; a execução remota deve ser confirmada no GitHub. Login Entra, recuperação de senha e hospedagem pública ainda não estão ativados.
 
 ## Documentação
 

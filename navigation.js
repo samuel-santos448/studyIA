@@ -64,9 +64,10 @@
   submodules(conversation, [['Por texto', [chat]], ['Minha voz', [voice]], ['Professor IA', [aiPanel]]]);
   sidebar.querySelector('nav a[href="#lesson"]').href = '#units';
   const reviewLink=document.createElement('a');reviewLink.href='#review';reviewLink.innerHTML='↻ <span>Revisão</span>';sidebar.querySelector('nav a[href="#settings"]').before(reviewLink);
+  const accountLink=document.createElement('a');accountLink.href='#account';accountLink.innerHTML='♙ <span>Minha conta</span>';sidebar.querySelector('nav').append(accountLink);
   const catalog=document.querySelector("#catalog"),learning=document.querySelector("#learning");
-  const modules = {exam:document.querySelector("#exam"),catalog,learning,home, units, lesson, numbers, cafe, vocabulary, studio, conversation, review, settings};
-  const titles = {exam:'Sua avaliação',catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
+  const modules = {account:document.querySelector("#account"),exam:document.querySelector("#exam"),catalog,learning,home, units, lesson, numbers, cafe, vocabulary, studio, conversation, review, settings};
+  const titles = {account:'Conta e empresa',exam:'Sua avaliação',catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
   function route() {
     const key = location.hash.slice(1).split('?')[0] || 'home'; const active = modules[key] ? key : 'home';
     pauseScene(); document.querySelectorAll('video,audio').forEach(media => media.pause()); document.dispatchEvent(new Event('studyia:navigate'));
