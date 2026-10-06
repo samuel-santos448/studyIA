@@ -18,3 +18,7 @@
 .menu-collapsed .menu-logo-button img{width:168px;left:-6px;top:-6px}
 @media(max-width:700px){.menu-open .sidebar{padding-top:14px;padding-bottom:14px}.menu-open .sidebar>.menu-logo-button{max-width:150px}.sidebar nav a,.menu-collapsed .sidebar nav a{min-height:44px;padding:9px 10px;gap:10px}.sidebar nav a span,.menu-collapsed .sidebar nav a span{font-size:12px}.menu-collapsed .menu-logo-button{width:42px;height:42px}.menu-collapsed .menu-logo-button img{width:150px;left:-6px;top:-6px}}
 @media(max-height:520px){.sidebar-caption{display:none}.sidebar>.menu-logo-button{max-width:120px}.sidebar,.menu-collapsed .sidebar{padding-top:10px;padding-bottom:10px}.sidebar>#menu-toggle{margin-bottom:8px}.sidebar nav{gap:2px}}
+body.lesson-focused{padding-left:0;padding-bottom:0;transition:none}
+.lesson-focused .sidebar{display:none!important}
+.lesson-focused .back-button span{display:inline}
+.lesson-focused .back-button{padding:6px 12px}
