@@ -27,7 +27,7 @@
    const messages=[...history.slice(-18),{role:'user',content:text}];
    const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,topic:topic.value}),signal:current.signal});const data=await response.json();
    if(!response.ok)throw Error(data.error||'Não foi possível obter uma resposta.');if(typeof data.reply!=='string'||!data.reply.trim())throw Error('Resposta inválida. Tente novamente.');
-   history=[...messages,{role:'assistant',content:data.reply}];message(text,'user');message(data.reply,'assistant');input.value='';status.textContent='Sua vez. Continue a conversa.';
+   history=[...messages,{role:'assistant',content:data.reply}];document.dispatchEvent(new CustomEvent('studyia:activity',{detail:{token:'ai-'+crypto.randomUUID()}}));message(text,'user');message(data.reply,'assistant');input.value='';status.textContent='Sua vez. Continue a conversa.';
   }catch(error){if(current.signal.aborted)status.textContent='Solicitação interrompida. Sua mensagem permanece no campo.';else status.textContent=error.message||'Falha de conexão. Tente novamente.';}finally{clearTimeout(timeout);busy=false;controller=null;controls();}
  });
  panel.querySelector('#ai-clear').addEventListener('click',()=>{if(busy){status.textContent='Aguarde a resposta ou saia do módulo para interromper.';return;}pauseScene();history=[];log.replaceChildren();input.value='';status.textContent=available?'Nova conversa. Escolha um tema e envie sua primeira mensagem.':'Professor ainda não configurado.';controls();});

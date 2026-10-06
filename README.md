@@ -38,6 +38,16 @@ O projeto ainda não tem licença de distribuição definida.
 
 ## Executar o protótipo
 
+### Perfil, meta diária e backup
+
+Em Preferências → Meu plano, salve um nome opcional, objetivo (dia a dia, viagens ou trabalho) e meta de 3, 5 ou 10 atividades. O nome e o objetivo personalizam o painel inicial; ainda não alteram o currículo nem são enviados automaticamente à IA.
+
+O painel conta exercícios corretos e revisões concluídas, uma vez por item por dia, e respostas recebidas do professor de IA. Não conta tentativas incorretas, cliques em áudio ou minutos de estudo. O calendário usa a data local do dispositivo; mantém até 90 dias e 100 atividades por dia. Atividades anteriores a esta versão não são reconstruídas.
+
+Em Preferências → Backup, baixe perfil, progresso das aulas, fila de revisão e atividades em JSON. A restauração mostra um resumo e exige confirmação antes de substituir os dados. Conversas, gravações e credenciais não entram no arquivo. Não há sincronização automática entre dispositivos.
+
+Verificação: perfil após recarga, contagem diária, download, rejeição de arquivos inválidos, cancelamento e restauração completa testados no Chrome. Validação de dados e servidor cobertos por sete testes automatizados.
+
 ### Navegação por módulos
 
 ### Revisão de dificuldades
@@ -74,4 +84,4 @@ O player aceita vídeos locais sem upload. Ainda não há vídeos de aula produz
 
 Abra index.html em um navegador moderno. Não exige instalação de dependências. O progresso é local e pode variar conforme o navegador ou o endereço usado para abrir a página.
 
-Verificação inicial: sintaxe de app.js validada com Node.js. Interface e comportamento ainda precisam de validação no navegador.
+Interface e fluxos principais verificados no Chrome automatizado. Gravação com microfone físico e conversas com IA real ainda precisam de validação.

@@ -1,0 +1,13 @@
+'use strict';
+(function(root){
+ const keys={profile:'studyia.profile.v1',activity:'studyia.activity.v1',introductions:'studyia.a1.introductions.v1',numbers:'studyia.a1.numbers.v1',review:'studyia.review.v1'};
+ const goals={everyday:'Conversas do dia a dia',travel:'Viagens',work:'Trabalho'};
+ const reviewIds=['introductions-0','introductions-1','introductions-2','numbers-0','numbers-1','numbers-2','numbers-3'];
+ function profile(value){if(!value||typeof value.name!=='string'||value.name.length>40||!Object.hasOwn(goals,value.goal)||![3,5,10].includes(value.dailyGoal))throw Error('Perfil inválido.');return{name:value.name.trim(),goal:value.goal,dailyGoal:value.dailyGoal};}
+ function lesson(value,total){if(!Array.isArray(value)||value.length>total||value.some(i=>!Number.isInteger(i)||i<0||i>=total)||new Set(value).size!==value.length)throw Error('Progresso de aula inválido.');return [...value];}
+ function review(value){if(!value||!Array.isArray(value.pending)||value.pending.length>7||value.pending.some(id=>!reviewIds.includes(id))||new Set(value.pending).size!==value.pending.length||!Number.isSafeInteger(value.reviewed)||value.reviewed<0)throw Error('Revisão inválida.');return{pending:[...value.pending],reviewed:value.reviewed};}
+ function dayKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+ function activity(value){if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length>90)throw Error('Histórico inválido.');const result={};for(const[day,tokens]of Object.entries(value)){if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||Number.isNaN(Date.parse(day))||new Date(day+'T12:00:00Z').toISOString().slice(0,10)!==day||!Array.isArray(tokens)||tokens.length>100||tokens.some(t=>typeof t!=='string'||!/^[a-z0-9-]{1,80}$/.test(t))||new Set(tokens).size!==tokens.length)throw Error('Atividades inválidas.');result[day]=[...tokens];}return result;}
+ function backup(value){if(!value||value.format!=='studyia-backup'||value.version!==1||!value.data||Object.keys(value.data).some(k=>!Object.hasOwn(keys,k)))throw Error('Este arquivo não é um backup compatível do StudyIA.');const data=value.data;return{profile:profile(data.profile),activity:activity(data.activity),introductions:lesson(data.introductions,3),numbers:lesson(data.numbers,4),review:review(data.review)};}
+ const api={keys,goals,profile,lesson,review,activity,backup,dayKey};root.StudyData=api;if(typeof module!=='undefined')module.exports=api;
+})(globalThis);
