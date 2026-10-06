@@ -36,6 +36,12 @@ O projeto ainda não tem licença de distribuição definida.
 
 ## Executar o protótipo
 
+### Estúdio interativo
+
+Os exemplos têm botões para ouvir, com voz sintetizada do navegador e velocidade ajustável. Inclui explicação em português, montagem de frases e demonstração animada de uma conversa. As animações respeitam a preferência de movimento reduzido do sistema.
+
+O player aceita vídeos locais sem upload. Ainda não há vídeos de aula produzidos nem GIFs incorporados. As animações atuais são feitas em CSS. A disponibilidade e a qualidade do áudio dependem das vozes do dispositivo; não se trata do professor de IA.
+
 Abra index.html em um navegador moderno. Não exige instalação de dependências. O progresso é local e pode variar conforme o navegador ou o endereço usado para abrir a página.
 
 Verificação inicial: sintaxe de app.js validada com Node.js. Interface e comportamento ainda precisam de validação no navegador.
