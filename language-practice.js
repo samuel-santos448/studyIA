@@ -1,0 +1,5 @@
+'use strict';
+(function(root){const V=typeof module!=='undefined'?require('./vocabulary-check.js'):root.StudyVocabularyCheck;const normalize=text=>String(text).normalize('NFKC').toLowerCase().replace(/[’‘]/g,"'").replace(/[^\p{L}\p{M}\p{N}\s'-]/gu,' ').replace(/\s+/g,' ').trim();
+ function valid(text,vocabulary,language='en',reference=''){if(typeof text!=='string'||text.length>1000)return false;const input=normalize(text);if(['ja','zh','ko'].includes(language)){const script=language==='ja'?/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/gu:language==='zh'?/\p{Script=Han}/gu:/\p{Script=Hangul}/gu;if((input.match(script)||[]).length<3)return false;const compact=input.replace(/\s/g,'');return compact===normalize(reference).replace(/\s/g,'')||vocabulary.some(word=>{const term=normalize(word.en);return term.length>0&&(term.match(script)||[]).length>0&&compact.includes(term.replace(/\s/g,''));});}return input.split(/\s+/).length>=(language==='en'?3:2)&&V.matches(text,vocabulary);}
+ const api={valid,normalize};root.StudyLanguagePractice=api;if(typeof module!=='undefined')module.exports=api;
+})(globalThis);
