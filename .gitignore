@@ -1,0 +1,24 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies and generated output
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.venv/
+__pycache__/
+
+# Local data and recordings
+data/local/
+recordings/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
