@@ -31,3 +31,4 @@ verify-course-audit.cjs
 verify-assessment.cjs
 .tools/
 verify-company.cjs
+verify-dictionary.cjs

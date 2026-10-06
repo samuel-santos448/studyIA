@@ -33,7 +33,8 @@ A importação aceita até 1 MB, apresenta um resumo e pede confirmação antes 
 
 - Estúdio: explicação falada, montagem de frases, demonstração animada, desafio auditivo e player de vídeos locais.
 - Conversação: roteiro demonstrativo, gravação local de até 60 segundos e professor IA por texto, com leitura sintetizada das respostas.
-- Vocabulário rápido: 12 cartões iniciais, busca e favoritos; o vocabulário do curso está dentro de cada aula.
+- Vocabulário: 912 cartões com termos e expressões, filtros por nível, busca, favoritos e acesso ao dicionário.
+- Dicionário: pesquisa em inglês ou português, exemplos bilíngues da base do curso e explicação pela IA quando configurada.
 - Revisão: dificuldades das atividades rápidas. A fila ainda não recebe os exercícios das 900 aulas.
 - Preferências: plano de estudo, meta diária, tema claro/escuro e backup.
 
@@ -59,10 +60,11 @@ A base para uma empresa inclui configuração do administrador, convites de alun
 
 Configure DATABASE_URL e TLS no .env, execute npm run migrate e inicie o servidor. Sem conexão configurada, permanece a demonstração local. A infraestrutura PostgreSQL de produção, alta disponibilidade e backups ainda precisam ser provisionados. Consulte [configuração e operação](docs/postgresql-operations.md).
 
-Validação: 48 testes Node, SQL no motor PostgreSQL embarcado de teste e fluxo Chrome com administrador, convite, isolamento, sincronização e resistência à alteração do cache. O workflow também executa testes com PostgreSQL 18 separado; a execução remota deve ser confirmada no GitHub. Login Entra, recuperação de senha e hospedagem pública ainda não estão ativados.
+Validação: 52 testes Node, SQL no motor PostgreSQL embarcado de teste e fluxo Chrome com administrador, convite, isolamento, sincronização e resistência à alteração do cache. O workflow também executa testes com PostgreSQL 18 separado; a execução remota deve ser confirmada no GitHub. Login Entra, recuperação de senha e hospedagem pública ainda não estão ativados.
 
 ## Documentação
 
+- [Vocabulário e dicionário](docs/dictionary.md)
 - [Escopo do produto](docs/product.md)
 - [Plano de desenvolvimento](docs/roadmap.md)
 - [Estado e verificação do curso](docs/course-status.md)

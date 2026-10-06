@@ -8,6 +8,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {openDatabase} from './backend/database.mjs';
 import {companyApi} from './backend/api.mjs';
+import {dictionary,validateQuery} from './backend/dictionary.mjs';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const files = new Set(['curriculum-c2.js','curriculum-c1.js','vocabulary-check.js','curriculum-b2.js','curriculum-b1.js','curriculum-a2.js','curriculum.js','curriculum-ui.js','curriculum.css','index.html','styles.css','media.css','conversation.css','layout.css','numbers.css','review.css','personalization.css','app.js','media.js','conversation.js','numbers.js','navigation.js','ai.js','review.js','learning-data.js','personalization.js','course.js','course.css','progress-panel.js','vocabulary.js','vocabulary.css','enhancements.js','themes.css']);
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8'};
@@ -15,6 +16,8 @@ const instructions = 'Você é um professor de inglês para adultos brasileiros.
 const topics = {introductions:'Pratique saudações e apresentação pessoal.',numbers:'Pratique números de um a doze e horas exatas.',cafe:'Simule um pedido simples em uma cafeteria, com vocabulário A1.'};
 export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speechRegion='',identity=identityConfig(process.env),database=null}={}) {
  const db=database,company=db?companyApi(db):null;
+ const lex=dictionary({apiKey,model,fetchImpl});
+ ['lexicon.js','dictionary-ui.js','dictionary.css'].forEach(file=>files.add(file));
  ['account-ui.js','account.css'].forEach(file=>files.add(file));
  const speech=pronunciationProvider({key:speechKey,region:speechRegion,fetchImpl});
  ['assessment.js','journey-store.js','assessment-ui.js','assessment.css'].forEach(file=>files.add(file));
@@ -35,6 +38,15 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
   if(url.pathname==='/api/status'&&req.method==='GET')return json(res,200,{configured});
   if(url.pathname==='/api/assessment/status'&&req.method==='GET')return json(res,200,{pronunciationConfigured:speech.configured,passMark:Assessment.passMark});
   if(url.pathname==='/api/auth/status'&&req.method==='GET')return json(res,200,publicIdentityStatus(identity));
+  if(url.pathname==='/api/dictionary'&&req.method==='POST'){
+   if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)return json(res,403,{error:'Origem não autorizada.'});
+   if(company&&await company.auth.company()){const session=await company.auth.session(req);if(!session)return json(res,401,{error:'Entre na sua conta para consultar a IA.'});if(req.headers['x-csrf-token']!==session.csrf)return json(res,403,{error:'Sessão inválida. Recarregue a página.'});}
+   if(req.headers['content-type']!=='application/json')return json(res,415,{error:'Envie a consulta em JSON.'});
+   let body,query;try{const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>4000)return json(res,413,{error:'Consulta muito longa.'});chunks.push(chunk);}body=JSON.parse(Buffer.concat(chunks).toString());query=validateQuery(body.query);if(body.level!==undefined&&!Curriculum.levels.includes(body.level))throw Error('Nível inválido.');}catch{return json(res,400,{error:'Informe uma palavra ou expressão de até oito palavras e 80 caracteres.'});}
+   if(!lex.configured)return json(res,503,{error:'IA ainda não configurada. As referências do curso continuam disponíveis.'});
+   if(Date.now()-windowStart>60000){count=0;windowStart=Date.now();}if(count>=10||active>=2)return json(res,429,{error:'Limite de consultas atingido. Aguarde um minuto.'});count++;active++;
+   try{return json(res,200,await lex.lookup(query,body.level||'A1'));}catch{return json(res,502,{error:'Não foi possível obter uma explicação completa da IA. Tente novamente; a base do curso continua disponível.'});}finally{active--;}
+  }
   if(url.pathname==='/api/pronunciation'&&req.method==='POST'){
    let learner=null,expectedDraft=null;
    if(company&&await company.auth.company()){try{const session=await company.auth.requireUser(req);if(req.headers['x-csrf-token']!==session.csrf)return json(res,403,{error:'Sessão inválida.'});learner=session.user.id;}catch{return json(res,401,{error:'Entre na sua conta para avaliar.'});}}
