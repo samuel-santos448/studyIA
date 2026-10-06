@@ -22,3 +22,7 @@ recordings/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Local visual verification artifacts
+preview-*.png
+verify-ui.cjs

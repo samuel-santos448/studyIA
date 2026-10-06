@@ -36,6 +36,16 @@ O projeto ainda não tem licença de distribuição definida.
 
 ## Executar o protótipo
 
+### Navegação por módulos
+
+A aplicação mostra uma tela por vez: Início, Aula, Estúdio, Conversação e Preferências. A aula separa exemplos e exercícios; o estúdio separa áudio, montagem de frases, demonstração e vídeo; a conversação separa texto e gravação de voz.
+
+No computador há menu lateral; no celular, navegação inferior. As rotas usam o fragmento da URL, com suporte a links diretos e voltar/avançar. Trocar de módulo interrompe áudio e gravação. O progresso dos exercícios é preservado.
+
+Navegação implementada em navigation.js e identidade visual em layout.css, mantendo os recursos pedagógicos nos arquivos app.js, media.js e conversation.js. Não há dependências de produção.
+
+Verificação no Chrome: módulos visíveis isoladamente, exercícios, montagem de frase, conversa, painel de voz, histórico e ausência de transbordamento horizontal em telas de 390 px.
+
 ### Estúdio interativo
 
 ### Conversação guiada e gravação

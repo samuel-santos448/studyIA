@@ -48,5 +48,6 @@
   stop.addEventListener('click', stopRecording); remove.addEventListener('click', () => { deleteRecording(); status.textContent = 'Gravação excluída.'; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopRecording(); });
   window.addEventListener('pagehide', () => { disposed = true; stopRecording(); deleteRecording(); });
+  document.addEventListener('studyia:navigate', stopRecording);
   restart();
 })();
