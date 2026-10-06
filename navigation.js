@@ -20,8 +20,10 @@
   const units = document.createElement('section'); units.id = 'units'; units.className = 'module';
   units.innerHTML = `<p class="eyebrow">INGLÊS / NÍVEL A1</p><h2>Escolha seu próximo passo.</h2><p>As unidades estão disponíveis para estudar e revisar no seu ritmo.</p><div class="unit-list"><a class="unit-link" href="#lesson"><div><small>UNIDADE 01</small><h3>Hello, world!</h3><p>Saudações e apresentação pessoal</p></div><strong class="unit-count" id="unit-one-count"></strong></a><a class="unit-link" href="#numbers"><div><small>UNIDADE 02</small><h3>What time is it?</h3><p>Números de 1 a 12 e horários exatos</p></div><strong class="unit-count" id="unit-two-count"></strong></a></div>`;
   main.append(units);
+  const cafe=document.querySelector('#cafe');const cafeLink=document.createElement('a');cafeLink.className='unit-link';cafeLink.href='#cafe';cafeLink.innerHTML='<div><small>UNIDADE 03</small><h3>A coffee, please.</h3><p>Pedidos, agradecimentos e preços</p></div><strong class="unit-count" id="unit-cafe-count"></strong>';units.querySelector('.unit-list').append(cafeLink);
+  function cafeCount(){document.querySelector('#unit-cafe-count').textContent=cafe.querySelector('.quiz-progress').textContent;}document.addEventListener('studyia:progress',cafeCount);cafeCount();
   const trail = dashboard.querySelector('article:last-child');
-  trail.innerHTML = '<small>SUA TRILHA</small><h2>Duas unidades para explorar</h2><p>Apresentação pessoal · Números e horários</p><a href="#units" class="button secondary">Ver unidades →</a>';
+  trail.innerHTML = '<small>SUA TRILHA</small><h2>Três unidades para explorar</h2><p>Apresentação · Números e horários · Cafeteria</p><a href="#units" class="button secondary">Ver unidades →</a>';
   const lessonBack = document.createElement('a'); lessonBack.href = '#units'; lessonBack.className = 'reset'; lessonBack.textContent = '← Voltar à trilha'; lesson.prepend(lessonBack);
   const numbersBack = lessonBack.cloneNode(true); numbers.prepend(numbersBack);
   function updateUnitCounts() { document.querySelector('#unit-one-count').textContent = document.querySelector('#progress').textContent; document.querySelector('#unit-two-count').textContent = document.querySelector('#numbers-progress').textContent; }
@@ -51,7 +53,7 @@
   }
   submodules(lesson, [['Aprender', [lesson.querySelector('.examples')]], ['Exercitar', [lesson.querySelector('.exercise')]]]);
   const grid = studio.querySelector('.studio-grid'); const parts = [...grid.children];
-  submodules(studio, [['Ouvir', [parts[0]]], ['Montar frases', [parts[1]]], ['Demonstração', [studio.querySelector('.mini-lesson')]], ['Vídeo', [studio.querySelector('.video-section')]]]); grid.remove();
+  submodules(studio, [['Ouvir', [parts[0]]], ['Montar frases', [parts[1]]], ['Demonstração', [studio.querySelector('.mini-lesson')]], ['Vídeo', [studio.querySelector('.video-section')]], ['Desafio auditivo', [studio.querySelector('#listening-panel')]]]); grid.remove();
   const voice = document.createElement('div');
   const hr = conversation.querySelector('hr'); let node = hr.nextSibling;
   while (node) { const next = node.nextSibling; voice.append(node); node = next; } hr.remove();
@@ -61,13 +63,13 @@
   submodules(conversation, [['Por texto', [chat]], ['Minha voz', [voice]], ['Professor IA', [aiPanel]]]);
   sidebar.querySelector('nav a[href="#lesson"]').href = '#units';
   const reviewLink=document.createElement('a');reviewLink.href='#review';reviewLink.innerHTML='↻ <span>Revisão</span>';sidebar.querySelector('nav a[href="#settings"]').before(reviewLink);
-  const modules = {home, units, lesson, numbers, studio, conversation, review, settings};
-  const titles = {home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
+  const modules = {home, units, lesson, numbers, cafe, studio, conversation, review, settings};
+  const titles = {home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
   function route() {
     const key = location.hash.slice(1) || 'home'; const active = modules[key] ? key : 'home';
     pauseScene(); document.querySelectorAll('video,audio').forEach(media => media.pause()); document.dispatchEvent(new Event('studyia:navigate'));
     Object.entries(modules).forEach(([id, el]) => { el.hidden = id !== active; });
-    const navigationKey = ['lesson','numbers'].includes(active) ? 'units' : active;
+    const navigationKey = ['lesson','numbers','cafe'].includes(active) ? 'units' : active;
     sidebar.querySelectorAll('nav a').forEach(link => { if (link.hash === `#${navigationKey}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
     document.querySelector('#module-title').textContent = titles[active]; document.title = `${titles[active]} — StudyIA`; window.scrollTo(0, 0);
   }

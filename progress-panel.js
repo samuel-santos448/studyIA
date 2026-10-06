@@ -1,0 +1,8 @@
+'use strict';
+document.addEventListener('DOMContentLoaded',()=>{
+ const root=document.createElement('article');root.className='connection-card';root.innerHTML='<h3>Sua evolução nas atividades</h3><p>Veja o que concluiu. Estes números indicam atividades feitas, não certificação de nível nem nota de fluência.</p><div id="progress-units"></div><p id="progress-total" role="status"></p>';
+ document.querySelector('#settings-panel-1').prepend(root);
+ const units=[['introductions','Apresentação pessoal',3,'lesson'],['numbers','Números e horários',4,'numbers'],['cafe','Na cafeteria',3,'cafe'],['listening','Compreensão auditiva',3,'studio']];
+ function render(){const list=root.querySelector('#progress-units');list.replaceChildren();let total=0;for(const[key,title,max,route]of units){let count=0;try{count=StudyData.lesson(JSON.parse(localStorage.getItem(StudyData.keys[key])||'[]'),max).length;}catch{}total+=count;const item=document.createElement('article');item.className='progress-row';const link=document.createElement('a');link.href='#'+route;link.textContent=title;const label=document.createElement('span');label.textContent=`${count} de ${max}`;const bar=document.createElement('progress');bar.max=max;bar.value=count;bar.setAttribute('aria-label',`${title}: ${count} de ${max}`);item.append(link,label,bar);list.append(item);}root.querySelector('#progress-total').textContent=`${total} de 13 atividades concluídas.`;}
+ document.addEventListener('studyia:progress',render);new MutationObserver(render).observe(document.querySelector('#progress'),{childList:true});window.addEventListener('focus',render);render();
+});

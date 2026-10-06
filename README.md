@@ -4,7 +4,7 @@ Aplicativo de aprendizado de idiomas com aulas estruturadas e um professor de in
 
 ## Estado do projeto
 
-Protótipo disponível com duas unidades de inglês A1, exemplos em áudio, exercícios, conversa guiada e gravação local de voz. O progresso é salvo no navegador. Integração por texto com professor de IA implementada para uso local, aguardando configuração e teste com credenciais reais.
+Protótipo disponível com três unidades de inglês A1 e desafio auditivo, exemplos em áudio, exercícios, conversa guiada e gravação local de voz. O progresso é salvo no navegador. Integração por texto com professor de IA implementada para uso local, aguardando configuração e teste com credenciais reais.
 
 ## Objetivo
 
@@ -37,6 +37,14 @@ A arquitetura e as dependências ainda serão escolhidas. Nenhuma chave de IA de
 O projeto ainda não tem licença de distribuição definida.
 
 ## Executar o protótipo
+
+### Cafeteria, compreensão auditiva e painel de progresso
+
+A terceira unidade ensina pedidos, agradecimentos e preços em uma cafeteria, com exemplos em áudio e três exercícios. Estúdio → Desafio auditivo oferece três frases sintetizadas para reconhecer o significado; a transcrição é opcional e não há nota de avaliação auditiva.
+
+Preferências → Progresso reúne as três unidades e o desafio auditivo, totalizando 13 atividades. Conclusão de exercícios não é uma certificação de fluência. Os novos exercícios entram na meta diária e seus erros podem ser revisados.
+
+O backup agora usa o formato v2, incluindo cafeteria e compreensão auditiva. Backups v1 são aceitos e inicializam as novas atividades sem progresso. Oito testes automatizados passaram; fluxos de cafeteria, transcrição, conclusão, persistência e total agregado foram verificados no Chrome.
 
 ### Perfil, meta diária e backup
 
