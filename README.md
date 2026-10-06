@@ -38,6 +38,16 @@ O projeto ainda não tem licença de distribuição definida.
 
 ## Executar o protótipo
 
+### Vocabulário, cartões e aparência
+
+Aula → Explorar vocabulário e cartões abre uma biblioteca com 12 termos e expressões, tradução, exemplos e áudio. A lista tem busca, filtro de favoritos e paginação de quatro itens. Favoritos são salvos localmente.
+
+Cartões permitem praticar todos os termos ou só favoritos, revelar significado, ouvir e marcar a prática. Cada termo marcado conta uma vez por dia na meta; não gera uma nota de domínio e não implementa repetição espaçada.
+
+O botão principal da tela inicial sugere primeiro revisões pendentes, depois a próxima unidade incompleta, o desafio auditivo e, finalmente, vocabulário. É uma sequência baseada no progresso, não uma recomendação gerada por IA. A tela inicial foi compactada para evitar cartões de navegação duplicados.
+
+Preferências → Meu plano oferece tema claro, escuro ou seguindo o sistema. A aparência e os favoritos entram no backup v3; arquivos v1 e v2 continuam aceitos. Nove testes automatizados passaram, além de busca, favoritos após recarga, cartões, recomendação, tema escuro e exportação dos novos dados no Chrome.
+
 ### Cafeteria, compreensão auditiva e painel de progresso
 
 A terceira unidade ensina pedidos, agradecimentos e preços em uma cafeteria, com exemplos em áudio e três exercícios. Estúdio → Desafio auditivo oferece três frases sintetizadas para reconhecer o significado; a transcrição é opcional e não há nota de avaliação auditiva.
