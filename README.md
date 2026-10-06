@@ -4,7 +4,7 @@ Aplicativo de aprendizado de idiomas com aulas estruturadas e um professor de in
 
 ## Estado do projeto
 
-Planejamento inicial. Ainda não há aplicativo executável nem integração com IA. Este repositório será a base para desenvolvimento, validação pessoal e futura comercialização.
+Protótipo inicial disponível: uma aula de inglês A1 com exemplos, três exercícios, correções e progresso salvo no navegador. A integração com IA e voz ainda não está implementada.
 
 ## Objetivo
 
@@ -33,3 +33,9 @@ A primeira interface será responsiva e acessível pelo navegador em celulares e
 A arquitetura e as dependências ainda serão escolhidas. Nenhuma chave de IA deve ser incluída no código ou enviada ao GitHub. As chamadas autenticadas ao provedor deverão passar por um servidor.
 
 O projeto ainda não tem licença de distribuição definida.
+
+## Executar o protótipo
+
+Abra index.html em um navegador moderno. Não exige instalação de dependências. O progresso é local e pode variar conforme o navegador ou o endereço usado para abrir a página.
+
+Verificação inicial: sintaxe de app.js validada com Node.js. Interface e comportamento ainda precisam de validação no navegador.
