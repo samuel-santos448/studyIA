@@ -73,7 +73,9 @@
     Object.entries(modules).forEach(([id, el]) => { el.hidden = id !== active; });
     const navigationKey = ['catalog','learning','lesson','numbers','cafe','vocabulary'].includes(active) ? 'units' : active;
     sidebar.querySelectorAll('nav a').forEach(link => { if (link.hash === `#${navigationKey}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
-    document.querySelector('#module-title').textContent = titles[active]; document.title = `${titles[active]} — StudyIA`; window.scrollTo(0, 0);
+    const currentLesson=active==='learning'?StudyCurriculum.get(new URLSearchParams(location.hash.split('?')[1]||'').get('lesson')):null;
+    document.querySelector('.level-chip b').textContent=currentLesson?.level||(['catalog','units'].includes(active)?'A1–C2':'A1');
+    document.querySelector('#module-title').textContent = currentLesson?`Aula ${currentLesson.id}`:titles[active]; document.title = `${currentLesson?.title||titles[active]} — StudyIA`; window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route); route();
 })();
