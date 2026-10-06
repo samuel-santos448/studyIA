@@ -1,0 +1,7 @@
+.sidebar nav a{display:flex;align-items:center;gap:12px;min-height:48px}
+.menu-icon{width:26px;height:26px;flex:0 0 26px;stroke-width:1.9;transition:transform .18s ease,stroke-width .18s ease;pointer-events:none}
+.sidebar nav a:hover .menu-icon,.sidebar nav a:focus-visible .menu-icon{transform:translateY(-2px) scale(1.08);stroke-width:2.2}
+.sidebar nav a[aria-current] .menu-icon{stroke-width:2.4}
+.sidebar nav a:focus-visible{outline:3px solid #bce7b9;outline-offset:2px}
+.back-button .menu-icon{width:20px;height:20px;flex-basis:20px}
+@media(prefers-reduced-motion:reduce){.menu-icon{transition:none}.sidebar nav a:hover .menu-icon,.sidebar nav a:focus-visible .menu-icon{transform:none}}

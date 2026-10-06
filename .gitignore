@@ -37,3 +37,5 @@ verify-assessment.cjs
 .tools/
 verify-company.cjs
 verify-dictionary.cjs
+verify-neutral-cards.cjs
+verify-menu-icons.cjs

@@ -18,7 +18,7 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
  const db=database,company=db?companyApi(db):null;
  const lex=dictionary({apiKey,model,fetchImpl});
  ['menu.js','menu.css','school-logo.jpg','brand.css','course-plan.js','lexicon.js','dictionary-ui.js','dictionary.css'].forEach(file=>files.add(file));
- files.add('school-elements.css');for(const number of ['01','02','04','05','06','07','08','09','10'])files.add(`assets/school/elementos-${number}.png`);
+ files.add('school-elements.css');files.add('menu-icons.css');files.add('menu-icons.js');for(const number of ['01','02','04','05','06','07','08','09','10'])files.add(`assets/school/elementos-${number}.png`);
  ['account-ui.js','account.css'].forEach(file=>files.add(file));
  const speech=pronunciationProvider({key:speechKey,region:speechRegion,fetchImpl});
  ['assessment.js','journey-store.js','assessment-ui.js','assessment.css'].forEach(file=>files.add(file));
