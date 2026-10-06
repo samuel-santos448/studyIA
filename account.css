@@ -1,3 +1,4 @@
 #account-form,#company-invite{display:grid;gap:16px;max-width:580px}#account label{display:grid;gap:8px}#account input,#account textarea{padding:13px;border:1px solid #c9c3dc;border-radius:10px;font:inherit;width:100%}#account [hidden]{display:none!important}.account-loading main{visibility:hidden}#company-report{margin-top:20px}.signed-in #backup-import{display:none!important}#account-logout{margin-bottom:24px}
 .account-unavailable main>.module:not(#account){display:none!important}.account-unavailable #account{display:block!important}
 .account-unavailable #account-form{display:none!important}
+.login-required main>.module:not(#account){display:none!important}.login-required #account{display:block!important}
