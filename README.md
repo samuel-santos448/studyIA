@@ -103,9 +103,9 @@ O player aceita vídeos locais sem upload. Ainda não há vídeos de aula produz
 Abra index.html em um navegador moderno. Não exige instalação de dependências. O progresso é local e pode variar conforme o navegador ou o endereço usado para abrir a página.
 
 Interface e fluxos principais verificados no Chrome automatizado. Gravação com microfone físico e conversas com IA real ainda precisam de validação.
-# Curso ampliado — primeiro lote A1
+# Curso ampliado — lotes disponíveis
 
-O catálogo contém 150 aulas A1 e 150 aulas A2 de inglês, em 25 temas por nível com seis aulas cada. Cada aula apresenta seis termos do tema, exemplo bilíngue com leitura sintetizada, dois exercícios e uma prática escrita. O catálogo tem busca e páginas de oito aulas. B1, B2, C1 e C2 permanecem sinalizados como em preparação.
+O catálogo contém 150 aulas em cada nível A1, A2 e B1, totalizando 450 aulas de inglês, em 25 temas por nível com seis aulas cada. Cada aula apresenta seis termos do tema, exemplo bilíngue com leitura sintetizada, dois exercícios e uma prática escrita. O catálogo tem busca e páginas de oito aulas. B2, C1 e C2 permanecem sinalizados como em preparação.
 
 O progresso é separado por aula e etapa, salvo localmente e incluído no backup v4, com migração dos backups anteriores. A prática escrita registra autoavaliação após uma checagem simples de vocabulário; ela não avalia fluência. O professor IA recebe o contexto da aula por um ID validado no servidor, quando a integração está configurada.
 
@@ -113,3 +113,5 @@ As aulas são conteúdo gerado, ainda sem revisão pedagógica independente. A p
 
 O lote A2 tem exemplos próprios, incluindo relatos no passado, planos, comparações, pedidos e problemas cotidianos. A prática propõe conversas com informações adicionais. A integração recebe o nível da aula validada no servidor, sem impor A1 às aulas A2. O cabeçalho acompanha o nível e o catálogo conserva o nível ao voltar de uma aula.
 
+
+O lote B1 acrescenta experiências, opiniões, narrativas, colaboração e resolução de problemas. Seus roteiros pedem motivos, exemplos e perguntas de acompanhamento. A conferência escrita verifica termos completos, não fragmentos de outras palavras, e segue sendo uma ajuda lexical sem avaliação de fluência.
