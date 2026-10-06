@@ -38,6 +38,14 @@ O projeto ainda não tem licença de distribuição definida.
 
 ### Estúdio interativo
 
+### Conversação guiada e gravação
+
+O painel de conversa segue um roteiro de apresentação pessoal, aceita respostas por texto e oferece dicas. Não usa IA e não classifica respostas fora do roteiro como erros gerais de inglês.
+
+A prática permite gravar até 60 segundos, reproduzir e excluir o áudio. As gravações ficam apenas em memória e não são enviadas ao servidor. O microfone requer permissão e um contexto aceito pelo navegador, normalmente HTTPS ou localhost. Não há avaliação de pronúncia.
+
+Verificação: conversa, conclusão, reinício e largura móvel testados no Chrome automatizado. Gravação com microfone real ainda não validada.
+
 Os exemplos têm botões para ouvir, com voz sintetizada do navegador e velocidade ajustável. Inclui explicação em português, montagem de frases e demonstração animada de uma conversa. As animações respeitam a preferência de movimento reduzido do sistema.
 
 O player aceita vídeos locais sem upload. Ainda não há vídeos de aula produzidos nem GIFs incorporados. As animações atuais são feitas em CSS. A disponibilidade e a qualidade do áudio dependem das vozes do dispositivo; não se trata do professor de IA.

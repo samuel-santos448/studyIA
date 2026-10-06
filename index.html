@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudyIA — sua primeira conversa</title><link rel="stylesheet" href="styles.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudyIA — sua primeira conversa</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="conversation.css"></head>
 <body>
 <link rel="stylesheet" href="media.css">
 <header><a class="brand" href="#">Study<span>IA</span></a><span>Inglês · A1</span></header>
@@ -8,7 +8,7 @@
 <section class="hero"><p class="eyebrow">UM POUCO TODOS OS DIAS</p><h1>Sua próxima conversa<br>começa aqui.</h1><p>Aprenda a se apresentar em inglês. Uma aula curta, no seu ritmo.</p><a class="button" href="#lesson">Começar a aula →</a></section>
 <section class="dashboard" aria-label="Seu aprendizado"><article><small>SEU PROGRESSO</small><h2 id="progress">0 de 3 exercícios</h2><progress id="bar" max="3" value="0"></progress><p id="status">Primeiro passo: apresentar-se.</p></article><article><small>SUA TRILHA</small><h2>01 · Hello, world!</h2><p>Apresentação pessoal · disponível</p><p class="muted">02 · Números e horários · em desenvolvimento</p></article></section>
 <section id="lesson" class="lesson"><p class="eyebrow">UNIDADE 01 / APRESENTAÇÃO PESSOAL</p><h2>Nice to meet you.</h2><p>Ao terminar, você terá praticado como dizer seu nome e perguntar o nome de alguém.</p><div class="examples"><article><strong>Hello!</strong><span>Olá!</span></article><article><strong>My name is Samuel.</strong><span>Meu nome é Samuel.</span></article><article><strong>What is your name?</strong><span>Qual é o seu nome?</span></article><article><strong>Nice to meet you.</strong><span>Prazer em conhecer você.</span></article></div><div class="exercise"><p id="counter" class="eyebrow"></p><h3 id="question"></h3><form id="answer-form"><fieldset id="choices"><legend class="sr-only">Escolha uma resposta</legend></fieldset><button class="button" type="submit">Verificar resposta</button></form><p id="feedback" role="status" aria-live="polite"></p><button id="next" class="button secondary" hidden>Próximo exercício →</button></div></section>
-<section class="practice"><p class="eyebrow">PRATIQUE EM VOZ ALTA</p><h2>Agora é a sua vez.</h2><p>Diga: “Hello! My name is…” e complete com seu nome. Depois, pergunte: “What is your name?”</p><p class="muted">Esta versão não grava nem avalia sua voz. O professor de IA será integrado em uma próxima etapa.</p></section>
+<section class="practice"><p class="eyebrow">PRATIQUE EM VOZ ALTA</p><h2>Agora é a sua vez.</h2><p>Diga: “Hello! My name is…” e complete com seu nome. Depois, pergunte: “What is your name?”</p><p class="muted">A gravação de prática está disponível abaixo; esta versão não avalia sua pronúncia. O professor de IA será integrado em uma próxima etapa.</p></section>
 <section class="practice media-lab" aria-label="Estúdio de prática">
 <p class="eyebrow">OUÇA · EXPERIMENTE · REPITA</p><h2>Seu estúdio de inglês</h2>
 <div class="studio-grid"><article><div class="mascot" aria-hidden="true">👋</div><h3>Uma explicação para ouvir</h3><p>Aprenda quando usar cada frase, com uma explicação em português.</p><button class="button" id="explain">▶ Ouvir explicação</button><button class="reset" id="stop-audio">Parar áudio</button><label for="speed">Velocidade da fala <select id="speed"><option value="0.75">Devagar</option><option value="1" selected>Normal</option></select></label><p id="audio-status" role="status"></p></article>
@@ -18,4 +18,4 @@
 </section>
 <button id="reset" class="reset">Reiniciar meu progresso</button><p id="storage-message" role="status"></p>
 </main><footer>StudyIA · Protótipo de aprendizado · Progresso salvo neste navegador</footer><script src="app.js"></script><script src="media.js"></script>
-</body></html>
+<script src="conversation.js"></script></body></html>
