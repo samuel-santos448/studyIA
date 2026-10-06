@@ -1,2 +1,2 @@
 'use strict';
-(()=>{let code='en';try{code=localStorage.getItem('studyia.language')==='es'?'es':'en';}catch{}globalThis.StudyLanguage={code,name:code==='es'?'espanhol':'inglês',speech:code==='es'?'es-ES':'en-US'};})();
+(()=>{let code='en';try{const saved=localStorage.getItem('studyia.language');if(Object.hasOwn(StudyLanguages,saved))code=saved;}catch{}globalThis.StudyLanguage={code,...StudyLanguages[code]};})();
