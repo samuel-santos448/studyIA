@@ -22,3 +22,4 @@ body.lesson-focused{padding-left:0;padding-bottom:0;transition:none}
 .lesson-focused .sidebar{display:none!important}
 .lesson-focused .back-button span{display:inline}
 .lesson-focused .back-button{padding:6px 12px}
+.language-picker{display:flex;align-items:center;gap:8px;font-size:12px;border:0;padding:0;margin:0;background:transparent}.language-picker select{max-width:120px;padding:8px;border:1px solid #badbb7;border-radius:10px;background:#fafbf8;color:#164574}.language-picker span:empty{display:none}

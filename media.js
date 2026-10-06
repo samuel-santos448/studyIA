@@ -9,7 +9,7 @@ const dialogue = [
   ['Nice to meet you.', 'Prazer em conhecer você.']
 ];
 function stopAudio() { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); audioStatus.textContent = ''; }
-function speak(text, lang = 'en-US', onEnd) {
+function speak(text, lang = globalThis.StudyLanguage?.speech||'en-US', onEnd) {
   if (!('speechSynthesis' in window)) { audioStatus.textContent = 'Áudio indisponível neste navegador. Use os textos da aula.'; if (onEnd) onEnd(); return; }
   stopAudio();
   const utterance = new SpeechSynthesisUtterance(text);

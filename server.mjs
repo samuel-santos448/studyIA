@@ -1,5 +1,5 @@
 import http from 'node:http';
-import Curriculum from './curriculum.js';
+import Curriculum from './curriculum.js';import Spanish from './curriculum-es.js';
 import Assessment from './assessment.js';
 import {pronunciationProvider} from './pronunciation.mjs';
 import {identityConfig,publicIdentityStatus} from './auth/identity.mjs';
@@ -18,7 +18,7 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
  const db=database,company=db?companyApi(db):null;
  const lex=dictionary({apiKey,model,fetchImpl});
  ['menu.js','menu.css','school-logo.jpg','brand.css','course-plan.js','lexicon.js','dictionary-ui.js','dictionary.css'].forEach(file=>files.add(file));
- files.add('school-elements.css');files.add('menu-icons.css');files.add('menu-icons.js');files.add('onboarding.js');files.add('onboarding.css');for(const number of ['01','02','04','05','06','07','08','09','10'])files.add(`assets/school/elementos-${number}.png`);
+ files.add('school-elements.css');files.add('menu-icons.css');files.add('menu-icons.js');files.add('onboarding.js');files.add('onboarding.css');files.add('language.js');files.add('language-ui.js');files.add('curriculum-es.js');for(const number of ['01','02','04','05','06','07','08','09','10'])files.add(`assets/school/elementos-${number}.png`);
  ['account-ui.js','account.css'].forEach(file=>files.add(file));
  const speech=pronunciationProvider({key:speechKey,region:speechRegion,fetchImpl});
  ['assessment.js','journey-store.js','assessment-ui.js','assessment.css'].forEach(file=>files.add(file));
@@ -43,24 +43,24 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
    if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)return json(res,403,{error:'Origem não autorizada.'});
    if(company&&await company.auth.company()){const session=await company.auth.session(req);if(!session)return json(res,401,{error:'Entre na sua conta para consultar a IA.'});if(req.headers['x-csrf-token']!==session.csrf)return json(res,403,{error:'Sessão inválida. Recarregue a página.'});}
    if(req.headers['content-type']!=='application/json')return json(res,415,{error:'Envie a consulta em JSON.'});
-   let body,query;try{const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>4000)return json(res,413,{error:'Consulta muito longa.'});chunks.push(chunk);}body=JSON.parse(Buffer.concat(chunks).toString());query=validateQuery(body.query);if(body.level!==undefined&&!Curriculum.levels.includes(body.level))throw Error('Nível inválido.');}catch{return json(res,400,{error:'Informe uma palavra ou expressão de até oito palavras e 80 caracteres.'});}
+   let body,query;try{const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>4000)return json(res,413,{error:'Consulta muito longa.'});chunks.push(chunk);}body=JSON.parse(Buffer.concat(chunks).toString());query=validateQuery(body.query);if(body.language!==undefined&&!['en','es'].includes(body.language))throw Error('Idioma inválido.');if(body.language!==undefined&&!['en','es'].includes(body.language))throw Error('Idioma inválido.');if(body.level!==undefined&&!Curriculum.levels.includes(body.level))throw Error('Nível inválido.');}catch{return json(res,400,{error:'Informe uma palavra ou expressão de até oito palavras e 80 caracteres.'});}
    if(!lex.configured)return json(res,503,{error:'IA ainda não configurada. As referências do curso continuam disponíveis.'});
    if(Date.now()-windowStart>60000){count=0;windowStart=Date.now();}if(count>=10||active>=2)return json(res,429,{error:'Limite de consultas atingido. Aguarde um minuto.'});count++;active++;
-   try{return json(res,200,await lex.lookup(query,body.level||'A1'));}catch{return json(res,502,{error:'Não foi possível obter uma explicação completa da IA. Tente novamente; a base do curso continua disponível.'});}finally{active--;}
+   try{return json(res,200,await lex.lookup(query,body.level||'A1',body.language||'en'));}catch{return json(res,502,{error:'Não foi possível obter uma explicação completa da IA. Tente novamente; a base do curso continua disponível.'});}finally{active--;}
   }
   if(url.pathname==='/api/pronunciation'&&req.method==='POST'){
    let learner=null,expectedDraft=null;
    if(company&&await company.auth.company()){try{const session=await company.auth.requireUser(req);if(req.headers['x-csrf-token']!==session.csrf)return json(res,403,{error:'Sessão inválida.'});learner=session.user.id;}catch{return json(res,401,{error:'Entre na sua conta para avaliar.'});}}
    if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)return json(res,403,{error:'Origem não autorizada.'});
-   const exam=Assessment.exam(url.searchParams.get('exam')),rawIndex=url.searchParams.get('question');
+   const language=url.searchParams.get('language')||'en';if(!['en','es'].includes(language))return json(res,400,{error:'Idioma inválido.'});const course=company?.forLanguage(language);const exam=(language==='es'?Assessment.create(Spanish,'es'):Assessment).exam(url.searchParams.get('exam')),rawIndex=url.searchParams.get('question');
    if(!/^[0-9]$/.test(rawIndex||'')||exam?.questions[Number(rawIndex)]?.type!=='pronunciation')return json(res,400,{error:'Questão de pronúncia inválida.'});
    if(!speech.configured)return json(res,503,{error:'Configure Azure Speech para avaliar a gravação.'});
    if(req.headers['content-type']!=='audio/wav')return json(res,415,{error:'Envie áudio WAV PCM mono de 16 kHz.'});
    if(Date.now()-speechWindow>60000){speechWindow=Date.now();speechCount=0;}
    if(speechCount>=10||speechActive>=2)return json(res,429,{error:'Limite de análise atingido. Aguarde um minuto.'});
-   if(learner){try{expectedDraft=await company.course.audioReady(learner,exam.id,Number(rawIndex));}catch(error){return json(res,error.status||409,{error:error.message});}}
+   if(learner){try{expectedDraft=await course.audioReady(learner,exam.id,Number(rawIndex));}catch(error){return json(res,error.status||409,{error:error.message});}}
    speechCount++;speechActive++;
-   try{const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>960044)return json(res,413,{error:'Grave até 30 segundos.'});chunks.push(chunk);}const result=await speech.assess(Buffer.concat(chunks),exam.questions[Number(rawIndex)].reference);const state=learner?await company.course.audioMark(learner,exam.id,Number(rawIndex),result.mark,expectedDraft):null;return json(res,200,{...result,...(state?{state}:{})});}
+   try{const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>960044)return json(res,413,{error:'Grave até 30 segundos.'});chunks.push(chunk);}const result=await speech.assess(Buffer.concat(chunks),exam.questions[Number(rawIndex)].reference,language);const state=learner?await course.audioMark(learner,exam.id,Number(rawIndex),result.mark,expectedDraft):null;return json(res,200,{...result,...(state?{state}:{})});}
    catch{return json(res,502,{error:'Não foi possível avaliar. Confira o áudio e a configuração do serviço.'});}finally{speechActive--;}
   }
   if(url.pathname==='/api/chat'&&req.method==='POST'){
@@ -75,7 +75,7 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
    try{
     for await(const chunk of req){raw+=chunk.toString();if(Buffer.byteLength(raw)>128000){json(res,413,{error:'Conversa muito longa. Comece uma nova conversa.'});return;}}
     const body=JSON.parse(raw);const messages=body.messages;
-    const lesson=body.lessonId===undefined?null:Curriculum.get(body.lessonId);if(body.lessonId!==undefined&&!lesson)return json(res,400,{error:'Aula não encontrada.'});
+    const language=body.language||'en';if(!['en','es'].includes(language))return json(res,400,{error:'Idioma inválido.'});const lesson=body.lessonId===undefined?null:(language==='es'?Spanish:Curriculum).get(body.lessonId);if(body.lessonId!==undefined&&!lesson)return json(res,400,{error:'Aula não encontrada.'});
     const topic=body.topic??'introductions';
     const practice=body.practice??'conversation',level=body.level??'A1';
     if(!['conversation','listening'].includes(practice)||!Curriculum.levels.includes(level))return json(res,400,{error:'Escolha uma prática e um nível válidos.'});
@@ -83,9 +83,9 @@ export function createApp({apiKey='',model='',fetchImpl=fetch,speechKey='',speec
     if(!Array.isArray(messages)||messages.length<1||messages.length>20||messages.some(m=>!m||!['user','assistant'].includes(m.role)||typeof m.content!=='string'||!m.content.trim()||m.content.length>(m.role==='user'?1000:6000))||messages.at(-1).role!=='user')return json(res,400,{error:'Mensagem inválida. Use até 1.000 caracteres e 20 mensagens.'});
     count++;active++;
     try{
-     const context=lesson?lesson.conversation.instructions+' Tema: '+lesson.topic+'. Vocabulário: '+lesson.vocabulary.map(w=>w.en).join(', ')+'. Exemplo estudado: '+lesson.example.en:'Use inglês '+level+' com respostas curtas. '+topics[topic];
-     const practiceInstructions=practice==='listening'?' Modo listening: escreva apenas em inglês, sem markdown, traduções ou indicação de resposta. No primeiro turno, crie um trecho curto adequado ao nível e ao tema seguido de uma pergunta de compreensão sobre ele. Nos turnos seguintes, dê feedback breve sobre a compreensão do aluno e outra pergunta ou trecho. O aluno ouvirá sua resposta com leitura sintetizada antes de revelar o texto.':' Modo conversação: simule uma conversa sobre o conteúdo e corrija um erro relevante por vez. Peça uma resposta curta ao aluno; não transforme a prática em uma prova.';
-     const upstream=await fetchImpl('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify({model,instructions:instructions+' '+context+practiceInstructions,input:messages.map(m=>({role:m.role,content:m.content})),store:false,max_output_tokens:600}),signal:AbortSignal.timeout(45000)});
+     const context=lesson?lesson.conversation.instructions+' Tema: '+lesson.topic+'. Vocabulário: '+lesson.vocabulary.map(w=>w.en).join(', ')+'. Exemplo estudado: '+lesson.example.en:'Use '+(language==='es'?'espanhol':'inglês')+' '+level+' com respostas curtas. '+topics[topic];
+     const practiceInstructions=(language==='es'?' Idioma exclusivo de prática: espanhol; onde as instruções dizem inglês, use espanhol. ':'')+(practice==='listening'?' Modo listening: escreva apenas em inglês, sem markdown, traduções ou indicação de resposta. No primeiro turno, crie um trecho curto adequado ao nível e ao tema seguido de uma pergunta de compreensão sobre ele. Nos turnos seguintes, dê feedback breve sobre a compreensão do aluno e outra pergunta ou trecho. O aluno ouvirá sua resposta com leitura sintetizada antes de revelar o texto.':' Modo conversação: simule uma conversa sobre o conteúdo e corrija um erro relevante por vez. Peça uma resposta curta ao aluno; não transforme a prática em uma prova.');
+     const upstream=await fetchImpl('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify({model,instructions:(language==='es'?'Você é professor de espanhol para brasileiros. Responda e pratique em espanhol. Explique em português quando necessário. Nunca ensine inglês nesta sessão. ':instructions)+' '+context+practiceInstructions.replace(/inglês/g,language==='es'?'espanhol':'inglês'),input:messages.map(m=>({role:m.role,content:m.content})),store:false,max_output_tokens:600}),signal:AbortSignal.timeout(45000)});
      if(!upstream.ok)return json(res,502,{error:upstream.status===429?'O professor está ocupado. Tente novamente em breve.':'Não foi possível acessar o professor. Confira a configuração do servidor.'});
      const data=await upstream.json();const reply=(data.output||[]).filter(item=>item.type==='message').flatMap(item=>item.content||[]).filter(item=>item.type==='output_text').map(item=>item.text).join('\n');
      if(!reply)return json(res,502,{error:'O professor não retornou uma resposta. Tente novamente.'});

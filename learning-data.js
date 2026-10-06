@@ -3,6 +3,7 @@
  const A=typeof module!=="undefined"?require("./assessment.js"):root.StudyAssessment;
  const L=typeof module!=='undefined'?require('./lexicon.js'):root.StudyLexicon;
  const keys={journey:A.key,curriculum:'studyia.curriculum.v1',profile:'studyia.profile.v1',activity:'studyia.activity.v1',introductions:'studyia.a1.introductions.v1',numbers:'studyia.a1.numbers.v1',cafe:'studyia.a1.cafe.v1',listening:'studyia.a1.listening.v1',review:'studyia.review.v1',vocabulary:'studyia.vocabulary.v1',appearance:'studyia.appearance.v1'};
+ if(root.StudyLanguage?.code==='es')for(const k of Object.keys(keys))if(k!=='journey'&&k!=='appearance')keys[k]+='.es';
  const goals={everyday:'Conversas do dia a dia',travel:'Viagens',work:'Trabalho'};
  const reviewIds=['introductions-0','introductions-1','introductions-2','numbers-0','numbers-1','numbers-2','numbers-3','cafe-0','cafe-1','cafe-2','listening-0','listening-1','listening-2'];
  function profile(value){if(!value||typeof value.name!=='string'||value.name.length>40||!Object.hasOwn(goals,value.goal)||![3,5,10].includes(value.dailyGoal))throw Error('Perfil inválido.');return{name:value.name.trim(),goal:value.goal,dailyGoal:value.dailyGoal};}
