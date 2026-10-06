@@ -4,7 +4,7 @@ Aplicativo de aprendizado de idiomas com aulas estruturadas e um professor de in
 
 ## Estado do projeto
 
-Protótipo inicial disponível: uma aula de inglês A1 com exemplos, três exercícios, correções e progresso salvo no navegador. A integração com IA e voz ainda não está implementada.
+Protótipo disponível com duas unidades de inglês A1, exemplos em áudio, exercícios, conversa guiada e gravação local de voz. O progresso é salvo no navegador. A integração com professor de IA ainda não está implementada.
 
 ## Objetivo
 
@@ -37,6 +37,10 @@ O projeto ainda não tem licença de distribuição definida.
 ## Executar o protótipo
 
 ### Navegação por módulos
+
+O módulo Aula abre uma trilha com duas unidades: apresentação pessoal (três exercícios) e números/horários (quatro exercícios). A segunda unidade inclui números de 1 a 12, exemplo visual de relógio, áudio e correções para respostas escritas. Seu progresso é salvo separadamente; ambas as unidades podem ser estudadas e revisadas livremente. `numbers.js` e `numbers.css` contêm essa unidade.
+
+Verificação adicional no Chrome: resposta incorreta não avança, quatro respostas corretas concluem a unidade, apóstrofos tipográficos são aceitos e o progresso permanece após recarregar.
 
 A aplicação mostra uma tela por vez: Início, Aula, Estúdio, Conversação e Preferências. A aula separa exemplos e exercícios; o estúdio separa áudio, montagem de frases, demonstração e vídeo; a conversação separa texto e gravação de voz.
 
