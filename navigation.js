@@ -14,6 +14,8 @@
   const cards = document.createElement('div'); cards.className = 'module-cards';
   cards.innerHTML = `<a href="#lesson"><span class="tile-icon">Aa</span><small>APRENDA</small><h3>Sua primeira aula</h3><p>Exemplos e exercícios para se apresentar.</p><strong>Entrar na aula ↗</strong></a><a href="#studio"><span class="tile-icon orange">♫</span><small>EXPLORE</small><h3>Estúdio de prática</h3><p>Áudio, palavras e uma conversa animada.</p><strong>Abrir estúdio ↗</strong></a><a href="#conversation"><span class="tile-icon pink">✦</span><small>PRATIQUE</small><h3>Vamos conversar</h3><p>Pratique por texto ou grave sua voz.</p><strong>Iniciar prática ↗</strong></a>`;
   home.append(cards);
+  const review=document.querySelector('#review');
+  const reviewCard=document.createElement('article');reviewCard.className='review-home';reviewCard.innerHTML='<div><h3>Reforce o que você aprendeu</h3><p id="home-review-count">Nenhuma revisão pendente</p></div><a href="#review" class="button secondary">Revisar agora →</a>';home.append(reviewCard);
   const numbers = document.querySelector('#numbers');
   const units = document.createElement('section'); units.id = 'units'; units.className = 'module';
   units.innerHTML = `<p class="eyebrow">INGLÊS / NÍVEL A1</p><h2>Escolha seu próximo passo.</h2><p>As unidades estão disponíveis para estudar e revisar no seu ritmo.</p><div class="unit-list"><a class="unit-link" href="#lesson"><div><small>UNIDADE 01</small><h3>Hello, world!</h3><p>Saudações e apresentação pessoal</p></div><strong class="unit-count" id="unit-one-count"></strong></a><a class="unit-link" href="#numbers"><div><small>UNIDADE 02</small><h3>What time is it?</h3><p>Números de 1 a 12 e horários exatos</p></div><strong class="unit-count" id="unit-two-count"></strong></a></div>`;
@@ -58,8 +60,9 @@
   const aiPanel = voice.querySelector('#ai-panel');
   submodules(conversation, [['Por texto', [chat]], ['Minha voz', [voice]], ['Professor IA', [aiPanel]]]);
   sidebar.querySelector('nav a[href="#lesson"]').href = '#units';
-  const modules = {home, units, lesson, numbers, studio, conversation, settings};
-  const titles = {home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',studio:'Estúdio de prática',conversation:'Conversação guiada',settings:'Progresso e preferências'};
+  const reviewLink=document.createElement('a');reviewLink.href='#review';reviewLink.innerHTML='↻ <span>Revisão</span>';sidebar.querySelector('nav a[href="#settings"]').before(reviewLink);
+  const modules = {home, units, lesson, numbers, studio, conversation, review, settings};
+  const titles = {home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
   function route() {
     const key = location.hash.slice(1) || 'home'; const active = modules[key] ? key : 'home';
     pauseScene(); document.querySelectorAll('video,audio').forEach(media => media.pause()); document.dispatchEvent(new Event('studyia:navigate'));

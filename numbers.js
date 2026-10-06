@@ -33,6 +33,7 @@
     event.preventDefault(); if (current < 0 || completed.includes(current)) return;
     const answer = normalize(root.querySelector('#numbers-answer').value); if (!answer) return;
     const exercise = exercises[current]; const correct = exercise.answers.includes(answer);
+    document.dispatchEvent(new CustomEvent('studyia:attempt', {detail:{unit:'numbers',index:current,correct}}));
     root.querySelector('#numbers-feedback').textContent = correct ? `Correto! ${exercise.explanation}` : `Ainda não. ${exercise.hint}`;
     if (correct) { completed.push(current); save(); updateProgress(); root.querySelector('#numbers-next').hidden = false; root.querySelector('#numbers-answer').disabled = true; root.querySelector('#numbers-form button').disabled = true; }
   });

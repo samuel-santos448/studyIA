@@ -26,8 +26,9 @@ function render() {
 document.querySelector('#answer-form').addEventListener('submit', event => {
   event.preventDefault();
   const answer = new FormData(event.currentTarget).get('answer');
-  if (current < 0 || answer === null) return;
+  if (current < 0 || answer === null || completed.includes(current)) return;
   const correct = Number(answer) === exercises[current].correct;
+  document.dispatchEvent(new CustomEvent('studyia:attempt', {detail:{unit:'introductions',index:current,correct}}));
   document.querySelector('#feedback').textContent = correct ? `Correto! ${exercises[current].explanation}` : 'Tente novamente. Consulte os exemplos acima e observe de quem estamos falando.';
   if (correct) { if (!completed.includes(current)) completed.push(current); save(); document.querySelector('#progress').textContent = `${completed.length} de 3 exercícios`; document.querySelector('#bar').value = completed.length; document.querySelector('#next').hidden = false; }
 });

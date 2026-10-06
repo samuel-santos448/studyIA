@@ -40,6 +40,12 @@ O projeto ainda não tem licença de distribuição definida.
 
 ### Navegação por módulos
 
+### Revisão de dificuldades
+
+O módulo Revisão recebe os exercícios errados das duas unidades a partir desta versão. Cada exercício entra uma única vez na fila; acertá-lo durante a aula não o remove. Na revisão, o aluno escreve a resposta, pode consultar um exemplo e conclui o item quando acerta. A fila e o contador de revisões ficam salvos no navegador. A tela inicial mostra a quantidade pendente.
+
+Limpar o histórico de revisão não limpa o progresso das aulas. A revisão usa regras fixas para os exercícios disponíveis; não analisa a conversa com IA nem implementa agendamento por repetição espaçada. Verificação no Chrome: captura de erro, persistência, resposta incorreta, exemplo, conclusão e recarga.
+
 O módulo Aula abre uma trilha com duas unidades: apresentação pessoal (três exercícios) e números/horários (quatro exercícios). A segunda unidade inclui números de 1 a 12, exemplo visual de relógio, áudio e correções para respostas escritas. Seu progresso é salvo separadamente; ambas as unidades podem ser estudadas e revisadas livremente. `numbers.js` e `numbers.css` contêm essa unidade.
 
 Verificação adicional no Chrome: resposta incorreta não avança, quatro respostas corretas concluem a unidade, apóstrofos tipográficos são aceitos e o progresso permanece após recarregar.
