@@ -2,6 +2,10 @@
 
 Esta versão integra conversação por texto com a Responses API da OpenAI. A conversa por voz com IA ainda não foi implementada. Gravação local e fala sintetizada dos exemplos continuam separadas.
 
+O professor permite selecionar apresentação pessoal, números/horários ou cafeteria. O servidor valida o tema e adiciona instruções específicas. As sugestões preenchem o campo sem enviar automaticamente. Para trocar o tema após uma resposta, use Nova conversa.
+
+Cada resposta tem um botão Ouvir resposta, usando síntese de voz do navegador. Se a resposta incluir uma explicação em português, selecione Português antes de ouvir. Isso não é áudio gerado pela OpenAI nem uma avaliação de pronúncia. A reprodução exige ação do usuário e pode ser interrompida. Preferências mostra a disponibilidade da configuração; a validade das credenciais só é confirmada durante uma chamada real.
+
 ## Executar
 
 1. Tenha Node.js 22.9 ou superior instalado.
