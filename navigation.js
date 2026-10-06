@@ -40,6 +40,8 @@
   const sidebar = document.createElement('aside'); sidebar.className = 'sidebar';
   sidebar.innerHTML = `<a class="brand" href="#home">Study<span>IA</span><span class="brand-dot">✦</span></a><p class="sidebar-caption">SEU ESPAÇO DE APRENDIZADO</p><nav aria-label="Módulos"><a href="#home">⌂ <span>Início</span></a><a href="#lesson">▤ <span>Aula</span></a><a href="#studio">♫ <span>Estúdio</span></a><a href="#conversation">◌ <span>Conversação</span></a><a href="#settings">⚙ <span>Preferências</span></a></nav><div class="sidebar-note"><strong>Um passo por dia.</strong><p>Pequenas práticas, novas possibilidades.</p><span>INGLÊS · A1–C2</span></div>`;
   document.body.prepend(sidebar);
+  const brand=sidebar.querySelector('.brand');brand.className='school-brand';brand.innerHTML='<img src="school-logo.jpg" alt="Escola Móbile — A Nord Anglia Education School" width="1772" height="794">';brand.setAttribute('aria-label','Escola Móbile — início');
+  const mobileBrand=brand.cloneNode(true);mobileBrand.classList.add('mobile-school-brand');document.querySelector('header').after(mobileBrand);
   document.querySelector('header').innerHTML = '<div><small>SEU PRÓXIMO PASSO</small><strong id="module-title">Início</strong></div><span class="level-chip">🇬🇧 Inglês <b>A1</b></span>';
   function submodules(container, items) {
     const nav = document.createElement('nav'); nav.className = 'subnav'; nav.setAttribute('aria-label', 'Atividades do módulo');
@@ -77,7 +79,7 @@
     sidebar.querySelectorAll('nav a').forEach(link => { if (link.hash === `#${navigationKey}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
     const currentLesson=active==='learning'?StudyCurriculum.get(new URLSearchParams(location.hash.split('?')[1]||'').get('lesson')):null;
     document.querySelector('.level-chip b').textContent=currentLesson?.level||(['catalog','units'].includes(active)?'A1–C2':'A1');
-    document.querySelector('#module-title').textContent = currentLesson?`Aula ${currentLesson.id}`:titles[active]; document.title = `${currentLesson?.title||titles[active]} — StudyIA`; window.scrollTo(0, 0);
+    document.querySelector('#module-title').textContent = currentLesson?`Aula ${currentLesson.id}`:titles[active]; document.title = `${currentLesson?.title||titles[active]} — Escola Móbile | StudyIA`; window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route); route();
 })();
