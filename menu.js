@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  const sidebar=document.querySelector('.sidebar'),header=document.querySelector('header');sidebar.id='main-menu';
  const controls=document.createElement('div');controls.className='header-controls';controls.innerHTML='<button id="menu-toggle" class="icon-button" aria-controls="main-menu" aria-expanded="false" aria-label="Abrir menu">☰</button><a id="page-back" class="back-button" href="#home" aria-label="Voltar ao início">← <span>Voltar</span></a>';header.prepend(controls);
  const menuContent=document.createElement('div');menuContent.className='menu-content';menuContent.append(...sidebar.childNodes);sidebar.append(menuContent);sidebar.prepend(controls.querySelector('#menu-toggle'));
+ const brand=menuContent.querySelector('.school-brand'),logoButton=sidebar.querySelector('#menu-toggle');logoButton.replaceChildren(brand.querySelector('img'));logoButton.className='menu-logo-button';logoButton.title='Abrir ou fechar menu';brand.remove();
+ document.querySelector('.mobile-school-brand')?.remove();
  const badge=document.createElement('a');badge.id='session-user';badge.href='#account';badge.className='session-user';badge.textContent='Visitante';header.append(badge);
  const backdrop=document.createElement('button');backdrop.className='menu-backdrop';backdrop.hidden=true;backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','Fechar menu');document.body.append(backdrop);
  const toggle=document.querySelector('#menu-toggle'),mobile=matchMedia('(max-width:700px)');let expanded=false;
