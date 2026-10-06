@@ -1,6 +1,6 @@
 # Acesso e navegação
 
-O menu começa compacto no computador e abre pelo botão ☰. No celular, ele abre sobre a página, pode ser fechado pelo fundo ou Escape e mantém o foco de teclado dentro do menu enquanto aberto. O item ativo e a aba da atividade têm destaque azul e verde. O botão Voltar no topo retorna ao início.
+O menu começa compacto e o botão ☰ fica dentro da barra lateral. No celular, uma faixa estreita mantém o botão acessível; o menu aberto fica sobre a página, pode ser fechado pelo fundo ou Escape e mantém o foco de teclado dentro dele enquanto aberto. O item ativo e a aba da atividade têm destaque azul e verde. O botão Voltar no topo retorna ao início.
 
 A identificação exibida no topo vem da sessão autenticada no servidor, com nome e papel. Aulas, provas e nível usam o ID do usuário da sessão; o cliente não escolhe o proprietário do progresso. O servidor valida respostas e pré-requisitos. Cada aluno tem registros separados no PostgreSQL. A API rejeita acessos sem sessão e alterações sem CSRF.
 
