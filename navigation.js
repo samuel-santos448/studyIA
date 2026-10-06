@@ -42,7 +42,7 @@
   document.body.prepend(sidebar);
   const brand=sidebar.querySelector('.brand');brand.className='school-brand';brand.innerHTML='<img src="school-logo.jpg" alt="Escola Móbile — A Nord Anglia Education School" width="1772" height="794">';brand.setAttribute('aria-label','Escola Móbile — início');
   const mobileBrand=brand.cloneNode(true);mobileBrand.classList.add('mobile-school-brand');document.querySelector('header').after(mobileBrand);
-  document.querySelector('header').innerHTML = '<div><small>SEU PRÓXIMO PASSO</small><strong id="module-title">Início</strong></div><span class="level-chip">🇬🇧 Inglês <b>A1</b></span>';
+  document.querySelector('header').innerHTML = '<div><strong id="module-title">Início</strong></div><span class="level-chip">🇬🇧 Inglês <b>A1</b></span>';
   function submodules(container, items) {
     const nav = document.createElement('nav'); nav.className = 'subnav'; nav.setAttribute('aria-label', 'Atividades do módulo');
     const panels = items.map(([title, nodes], index) => {
