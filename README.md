@@ -103,3 +103,11 @@ O player aceita vídeos locais sem upload. Ainda não há vídeos de aula produz
 Abra index.html em um navegador moderno. Não exige instalação de dependências. O progresso é local e pode variar conforme o navegador ou o endereço usado para abrir a página.
 
 Interface e fluxos principais verificados no Chrome automatizado. Gravação com microfone físico e conversas com IA real ainda precisam de validação.
+# Curso ampliado — primeiro lote A1
+
+O catálogo contém 150 aulas A1 de inglês, em 25 temas com seis aulas cada. Cada aula apresenta seis termos do tema, exemplo bilíngue com leitura sintetizada, dois exercícios e uma prática escrita. O catálogo tem busca e páginas de oito aulas. Os outros níveis permanecem sinalizados como em preparação.
+
+O progresso é separado por aula e etapa, salvo localmente e incluído no backup v4, com migração dos backups anteriores. A prática escrita registra autoavaliação após uma checagem simples de vocabulário; ela não avalia fluência. O professor IA recebe o contexto da aula por um ID validado no servidor, quando a integração está configurada.
+
+As aulas são conteúdo gerado, ainda sem revisão pedagógica independente. A presença de 150 aulas não certifica cobertura completa do CEFR. Não há vídeos produzidos para cada aula nem avaliação automática de pronúncia. Verificação: testes de conteúdo, armazenamento e servidor, além do fluxo no navegador em tamanho móvel.
+

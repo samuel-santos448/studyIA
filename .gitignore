@@ -26,3 +26,4 @@ Thumbs.db
 # Local visual verification artifacts
 preview-*.png
 verify-ui.cjs
+verify-curriculum.cjs
