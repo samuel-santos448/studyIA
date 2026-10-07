@@ -1,4 +1,4 @@
-import {sameOrigin,publicOrigin} from './backend/http-security.mjs';
+import {sameOrigin,publicOrigin,allowedHost} from './backend/http-security.mjs';
 import {conversationPolicy} from './backend/teaching.mjs';
 import {speechAudio} from './backend/speech.mjs';
 import {realtime} from './backend/realtime.mjs';
@@ -35,7 +35,7 @@ export function createApp({apiKey='',model='',ttsModel=process.env.OPENAI_TTS_MO
  const server=http.createServer(async(req,res)=>{
   res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');
   const url=new URL(req.url,'http://localhost');
-  if(!/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(req.headers.host||''))return json(res,403,{error:'Host não autorizado.'});
+  if(!allowedHost(req))return json(res,403,{error:'Host não autorizado.'});
   try{
   if(url.pathname==='/health/live'&&req.method==='GET')return json(res,200,{status:'alive'});
   if(url.pathname==='/health/ready'&&req.method==='GET'){if(!db)return json(res,503,{status:'not-ready'});try{const result=await db.query('SELECT version FROM schema_migrations WHERE version=1');return json(res,result.rows.length?200:503,{status:result.rows.length?'ready':'not-ready'});}catch{return json(res,503,{status:'not-ready'});}}
