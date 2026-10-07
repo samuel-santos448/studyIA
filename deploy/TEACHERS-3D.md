@@ -15,9 +15,24 @@ mudam suavemente, sem interromper os formatos de boca usados na fala.
 As mechas são combinadas em poucas geometrias para reduzir o custo gráfico
 nos celulares. Os arquivos novos continuam hospedados no StudyIA.
 
+Cinco novas rodadas de refinamento:
+
+1. Pele com textura de 2048 px e ajustes de mandíbula, nariz e bochechas.
+2. Cílios discretos, reflexos dos olhos e movimento de sobrancelhas e pálpebras.
+3. Cabelo curto com mais volume, corte feminino com camadas e pontas suaves.
+4. Uniformes com gola curva, tecido e logo original da escola. Zezinho usa
+   óculos discretos. O logo usa school-logo.jpg, projetado no material da
+   camisa: acompanha a malha animada, sem uma placa flutuante. O desenho
+   simplificado também inclui o logo.
+5. Expressões interpoladas, gestos de atenção ao ouvir, pequenos movimentos
+   de olhar e cabelo, boca menos exagerada e fundo de estúdio mais suave.
+
+As cinco rodadas foram conferidas no navegador. Também foram conferidos
+áudio simulado, interrupção de fala, movimento reduzido e visual em celular.
+
 Os arquivos ficam no servidor StudyIA; não há CDN, serviço de avatar externo
 nem cobrança adicional por minuto de animação. O arquivo humano tem cerca
-de 9 MB e é compartilhado pelos dois personagens. A voz continua usando a
+de 9,5 MB e é compartilhado pelos dois personagens. A voz continua usando a
 OpenAI e sua cobrança habitual. Não é necessário instalar GPU na VM:
 o processamento gráfico e de animação ocorre no computador do aluno.
 

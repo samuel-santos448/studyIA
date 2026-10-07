@@ -7,7 +7,7 @@ if(!input||!output)throw Error('Specify input.glb and output.glb');
 const file=await readFile(input),length=file.readUInt32LE(12);
 const doc=JSON.parse(file.subarray(20,20+length).toString());
 const binary=file.subarray(28+length);
-const keep=/^viseme_|^eyeBlink|^eyeLook|^mouthSmile|^browInnerUp$|^browOuterUp|^jawOpen$/;
+const keep=/^viseme_|^eyeBlink|^eyeLook|^eyeSquint|^eyeWide|^mouthSmile|^browInnerUp$|^browOuterUp|^jawOpen$/;
 for(const mesh of doc.meshes){
  const names=mesh.extras?.targetNames;if(!names)continue;
  const indices=names.map((name,i)=>keep.test(name)?i:-1).filter(i=>i>=0);
@@ -22,7 +22,8 @@ for(const img of doc.images){
  const data=binary.subarray(view.byteOffset||0,(view.byteOffset||0)+view.byteLength);
  // Hair and the eye overlay need alpha. Skin and clothing use JPEG.
  const alpha=/ponytail|brown_eye/.test(img.name);
- const pipeline=sharp(data).resize({width:1024,height:1024,fit:'inside',withoutEnlargement:true});
+ const resolution=/female_diffuse/.test(img.name)?2048:1024;
+ const pipeline=sharp(data).resize({width:resolution,height:resolution,fit:'inside',withoutEnlargement:true});
  resized.set(img.bufferView,await(alpha?pipeline.png():pipeline.jpeg({quality:85})).toBuffer());
  img.mimeType=alpha?'image/png':'image/jpeg';
 }

@@ -1,5 +1,6 @@
 import * as THREE from '/vendor/three.module.js';
 import {GLTFLoader} from '/vendor/loaders/GLTFLoader.js';
+import {createTeacherMotion} from './teacher-motion.mjs';
 import {styleTeacher} from './teacher-style.mjs';
 import {HeadAudio} from '/assets/teachers/vendor/headaudio.min.mjs';
 
@@ -18,8 +19,8 @@ export async function createTeacherAvatar(stage){
  const fill=new THREE.DirectionalLight(0xdcecff,.9);fill.position.set(2,2,3);scene.add(fill);
  const rim=new THREE.DirectionalLight(0xffffff,2.5);rim.position.set(1,2,-2);scene.add(rim);
  const loader=new GLTFLoader();
- let model;
- try{model=(await loader.loadAsync('/assets/teachers/teacher-base.glb')).scene;}catch(error){renderer.dispose();viewport.remove();throw error;}
+ let model,schoolLogo;
+ try{const loaded=await Promise.all([loader.loadAsync('/assets/teachers/teacher-base.glb'),new THREE.TextureLoader().loadAsync('/school-logo.jpg')]);model=loaded[0].scene;schoolLogo=loaded[1];schoolLogo.colorSpace=THREE.SRGBColorSpace;schoolLogo.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());}catch(error){schoolLogo?.dispose();renderer.dispose();viewport.remove();throw error;}
  scene.add(model);model.updateMatrixWorld(true);
  const bones={},rest={},morphs=[],faceMeshes=[];let clothing,hair,lashes;
 
@@ -34,13 +35,13 @@ export async function createTeacherAvatar(stage){
    if(o.material){o.material=o.material.clone();o.material.roughness=Math.max(.55,o.material.roughness||0);}
   }
  });
- const appearance=styleTeacher({scene,model,bones,clothing,hair,lashes,faceMeshes});
+ const appearance=styleTeacher({scene,model,bones,clothing,hair,lashes,faceMeshes,schoolLogo});
  const pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(appearance.studio,.04);pmrem.dispose();
  appearance.studio.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});
- model.traverse(o=>{if(o.isMesh&&o.name.includes('high-poly')){const old=o.material;o.material=new THREE.MeshPhysicalMaterial({map:old.map,alphaTest:old.alphaTest,side:old.side,roughness:.19,clearcoat:1,clearcoatRoughness:.08,envMap:environment.texture,envMapIntensity:.85});old.dispose();}});
+ model.traverse(o=>{if(o.isMesh&&o.name.includes('high-poly')){const old=o.material;o.material=new THREE.MeshPhysicalMaterial({map:old.map,alphaTest:old.alphaTest,side:old.side,roughness:.23,clearcoat:.85,clearcoatRoughness:.10,envMap:environment.texture,envMapIntensity:.85});old.dispose();}});
  const size=()=>{const w=viewport.clientWidth||500,h=viewport.clientHeight||440;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();};
  const resize=new ResizeObserver(size);resize.observe(viewport);size();
- let smileAmount=.28,attention=0;let character='zezinho',state='idle',energy=0,node=null,audioRevision=0,visible=true,disposed=false,last=0,frame=0,blinkAt=performance.now()+2200,blinkStart=-1000;
+ const motion=createTeacherMotion();let character='zezinho',state='idle',energy=0,node=null,audioRevision=0,visible=true,disposed=false,last=0,frame=0;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const setMorph=(name,value)=>{for(const m of morphs){const i=m.morphTargetDictionary[name];if(i!==undefined)m.morphTargetInfluences[i]=value;}};
  const resetMouth=()=>{for(const m of morphs)for(const [name,i]of Object.entries(m.morphTargetDictionary))if(name.startsWith('viseme_')||name==='jawOpen')m.morphTargetInfluences[i]=0;energy=0;};
@@ -57,29 +58,24 @@ export async function createTeacherAvatar(stage){
   if(disposed)return;frame=requestAnimationFrame(render);
   if(!visible||document.hidden){last=now;return;}if(now-last<1000/30)return;
   const dt=Math.min(now-last,100)||33;last=now;
-  const t=now/1000,speaking=state==='speaking',listening=state==='listening';
-  if(now>=blinkAt){blinkStart=now;blinkAt=now+3200+Math.random()*2200;}
-  const blink=clamp(1-Math.abs(now-blinkStart-100)/100,0,1);
-  setMorph('eyeBlinkLeft',blink);setMorph('eyeBlinkRight',blink);
-  const ease=1-Math.exp(-dt/280);smileAmount+=((speaking?.12:listening?.30:.32)-smileAmount)*ease;attention+=((listening?1:0)-attention)*ease;setMorph('mouthSmileLeft',smileAmount);setMorph('mouthSmileRight',smileAmount*.96);
-  const gaze=state==='thinking'?.15:Math.sin(t*.42)*.065;setMorph('eyeLookOutRight',Math.max(0,gaze));setMorph('eyeLookInLeft',Math.max(0,gaze));setMorph('eyeLookOutLeft',Math.max(0,-gaze));setMorph('eyeLookInRight',Math.max(0,-gaze));
-  setMorph('browInnerUp',state==='thinking'?.15:listening?.08:0);
-  const move=reduced.matches?0:1;
-  pose('Head',move*(attention*.015+Math.sin(t*.9)*.009),move*Math.sin(t*.45)*.018,move*(-attention*.018+Math.sin(t*.6)*.012));
-  pose('Neck',move*Math.sin(t*.6)*.008,0,0);
-  pose('Spine2',move*Math.sin(t*1.4)*.006,move*Math.sin(t*.5)*.009,0);
-  pose('LeftArm',0,0,.74+move*(speaking?Math.sin(t*1.1)*.028:0));
-  pose('RightArm',0,0,-.74+move*(speaking?Math.sin(t*.9)*.032:0));
+  const p=motion.step({time:now,delta:dt,state,character,reduced:reduced.matches});
+  setMorph('eyeBlinkLeft',p.blink);setMorph('eyeBlinkRight',p.blink);
+  setMorph('mouthSmileLeft',p.smile);setMorph('mouthSmileRight',p.smile*.98);
+  setMorph('eyeSquintLeft',p.squint);setMorph('eyeSquintRight',p.squint);
+  setMorph('eyeLookOutRight',Math.max(0,p.gaze));setMorph('eyeLookInLeft',Math.max(0,p.gaze));setMorph('eyeLookOutLeft',Math.max(0,-p.gaze));setMorph('eyeLookInRight',Math.max(0,-p.gaze));
+  setMorph('browInnerUp',p.brow);appearance.setExpression(p.brow,p.hairSway);
+  pose('Head',...p.head);pose('Neck',p.neck,0,0);pose('Spine2',...p.spine);
+  pose('LeftArm',0,0,p.arms[0]);pose('RightArm',0,0,p.arms[1]);
   pose('LeftForeArm',0,0,-.18);pose('RightForeArm',0,0,.18);
   if(node)node.update(dt);
-  else setMorph('jawOpen',speaking?energy*.6:0);
+  else setMorph('jawOpen',state==='speaking'?energy*.50:0);
   renderer.render(scene,camera);
  }
  const intersection=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;});intersection.observe(stage);
  frame=requestAnimationFrame(render);
  const api={
   select,
-  setState(value){if(disposed)return;state=value;if(value!=='speaking')resetMouth();},
+  setState(value){if(disposed||state===value)return;state=value;if(value!=='speaking')resetMouth();},
   setEnergy(value){if(disposed)return;energy=clamp(value*15,0,1);},
   async connectAudio(context,source){
    if(disposed)return;const rev=++audioRevision;
@@ -89,12 +85,12 @@ export async function createTeacherAvatar(stage){
     const next=new HeadAudio(context,{parameterData:{vadGateActiveDb:-42,vadGateInactiveDb:-52}});
     await next.loadModel('/assets/teachers/vendor/model-en-mixed.bin');
     if(rev!==audioRevision||context.state==='closed'){next.stop();next.disconnect();next.port.close();return;}
-    node=next;next.onvalue=(key,value)=>setMorph(key,state==='speaking'?value:0);
+    node=next;next.onvalue=(key,value)=>setMorph(key,state==='speaking'?clamp(value*.82,0,.85):0);
     next.onprocessorerror=()=>{api.disconnectAudio();};source.connect(next);
    }catch{if(rev===audioRevision)api.disconnectAudio();} // Audio and jaw animation keep working on older browsers.
   },
   disconnectAudio(){audioRevision++;if(node){node.onvalue=null;node.stop();node.disconnect();node.port.close();node=null;}resetMouth();},
-  dispose(){if(disposed)return;disposed=true;api.disconnectAudio();cancelAnimationFrame(frame);resize.disconnect();intersection.disconnect();scene.traverse(o=>{o.geometry?.dispose();if(o.material){for(const value of Object.values(o.material))if(value?.isTexture)value.dispose();o.material.dispose();}});environment.dispose();renderer.dispose();viewport.remove();}
+  dispose(){if(disposed)return;disposed=true;api.disconnectAudio();cancelAnimationFrame(frame);resize.disconnect();intersection.disconnect();scene.traverse(o=>{o.geometry?.dispose();if(o.material){for(const value of Object.values(o.material))if(value?.isTexture)value.dispose();o.material.dispose();}});schoolLogo.dispose();environment.dispose();renderer.dispose();viewport.remove();}
  };
  renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();api.dispose();stage.dataset.avatar='fallback';stage.querySelector('.teacher-avatar').removeAttribute('hidden');stage.querySelector('.avatar-loading').textContent='Visual simplificado. A conversa por voz continua disponível.';});
  return api;
