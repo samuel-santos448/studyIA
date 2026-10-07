@@ -7,6 +7,14 @@ anima piscadas, respiração, cabeça, braços e expressões ao ouvir e pensar.
 É uma primeira versão com base compartilhada, preparada para futura troca
 por modelos próprios da escola.
 
+O refinamento visual acrescenta cabelo com volume e mechas sobre o couro
+cabeludo, sobrancelhas contínuas, barba discreta no professor, acessórios
+na professora e camisas com gola. A pele recebe tons distintos; os olhos
+têm reflexos de iluminação de estúdio. Sorriso, olhar e inclinação da cabeça
+mudam suavemente, sem interromper os formatos de boca usados na fala.
+As mechas são combinadas em poucas geometrias para reduzir o custo gráfico
+nos celulares. Os arquivos novos continuam hospedados no StudyIA.
+
 Os arquivos ficam no servidor StudyIA; não há CDN, serviço de avatar externo
 nem cobrança adicional por minuto de animação. O arquivo humano tem cerca
 de 9 MB e é compartilhado pelos dois personagens. A voz continua usando a
