@@ -7,7 +7,7 @@ test('3D teachers load self-hosted assets without exposing arbitrary dependency 
  const server=createApp();await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base=`http://127.0.0.1:${server.address().port}`;
  try{
-  for(const path of ['/teacher-motion.mjs','/teacher-style.mjs','/teacher-avatar.mjs','/vendor/three.module.js','/vendor/three.core.js','/vendor/loaders/GLTFLoader.js','/vendor/utils/BufferGeometryUtils.js','/vendor/utils/SkeletonUtils.js','/assets/teachers/vendor/headaudio.min.mjs','/assets/teachers/vendor/headworklet.min.mjs']){
+  for(const path of ['/teacher-character.mjs','/teacher-face.mjs','/teacher-motion.mjs','/teacher-style.mjs','/teacher-avatar.mjs','/vendor/three.module.js','/vendor/three.core.js','/vendor/loaders/GLTFLoader.js','/vendor/utils/BufferGeometryUtils.js','/vendor/utils/SkeletonUtils.js','/assets/teachers/vendor/headaudio.min.mjs','/assets/teachers/vendor/headworklet.min.mjs']){
    const response=await fetch(base+path);assert.equal(response.status,200,path);assert.match(response.headers.get('content-type'),/javascript/);
   }
   const model=await fetch(base+'/assets/teachers/teacher-base.glb');assert.equal(model.status,200);assert.equal(model.headers.get('content-type'),'model/gltf-binary');

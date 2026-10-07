@@ -1,55 +1,39 @@
-# Professores 3D
+# Professores 3D estilizados
 
-Zezinho e Mariazinha usam duas variantes de uma base humana CC0, enquadradas
-do peito para cima. Cabelo curto/alongado, roupa azul/verde e formato do maxilar
-distinguem os personagens. O navegador renderiza o modelo com Three.js e
-anima piscadas, respiração, cabeça, braços e expressões ao ouvir e pensar.
-É uma primeira versão com base compartilhada, preparada para futura troca
-por modelos próprios da escola.
+Zezinho e Mariazinha agora usam personagens paramétricos originais do StudyIA,
+construídos em teacher-character.mjs. A versão anterior, baseada em uma malha
+humana CC0, foi substituída na renderização por rostos estilizados, olhos maiores,
+cabelos com volume, uniformes e mãos articuladas. É uma interpretação em tempo
+real do estilo solicitado; o acabamento não equivale a uma produção cinematográfica.
 
-O refinamento visual acrescenta cabelo com volume e mechas sobre o couro
-cabeludo, sobrancelhas contínuas, barba discreta no professor, acessórios
-na professora e camisas com gola. A pele recebe tons distintos; os olhos
-têm reflexos de iluminação de estúdio. Sorriso, olhar e inclinação da cabeça
-mudam suavemente, sem interromper os formatos de boca usados na fala.
-As mechas são combinadas em poucas geometrias para reduzir o custo gráfico
-nos celulares. Os arquivos novos continuam hospedados no StudyIA.
+Os controles faciais incluem piscadas, olhar, sobrancelhas, sorriso e formatos
+relativos da boca. teacher-face.mjs converte os 15 visemas do HeadAudio em abertura,
+arredondamento, largura e pressão dos lábios. teacher-motion.mjs interpola os
+estados de espera, escuta, pensamento e fala. Os braços, punhos e dedos acompanham
+gestos de explicação. Em movimento reduzido, os gestos decorativos são removidos.
 
-Cinco novas rodadas de refinamento:
+O logo original school-logo.jpg fica em um patch curvo no peito, que acompanha
+a roupa. As duas variantes têm cabelo, proporções faciais, cores de uniforme e
+golas distintos. O navegador gera as geometrias e a textura da íris localmente;
+não é preciso baixar o antigo arquivo humano de 9,5 MB para exibir os professores.
+A versão antiga e sua atribuição permanecem no repositório como referência.
 
-1. Pele com textura de 2048 px e ajustes de mandíbula, nariz e bochechas.
-2. Cílios discretos, reflexos dos olhos e movimento de sobrancelhas e pálpebras.
-3. Cabelo curto com mais volume, corte feminino com camadas e pontas suaves.
-4. Uniformes com gola curva, tecido e logo original da escola. Zezinho usa
-   óculos discretos. O logo usa school-logo.jpg, projetado no material da
-   camisa: acompanha a malha animada, sem uma placa flutuante. O desenho
-   simplificado também inclui o logo.
-5. Expressões interpoladas, gestos de atenção ao ouvir, pequenos movimentos
-   de olhar e cabelo, boca menos exagerada e fundo de estúdio mais suave.
+Three.js, HeadAudio e os arquivos da escola são hospedados pelo StudyIA. Não há
+CDN, conta em serviço de avatar ou cobrança adicional por minuto de animação.
+A voz mantém a integração OpenAI existente e sua cobrança habitual. Nenhuma GPU
+precisa ser instalada na VM; a renderização ocorre no navegador do aluno.
 
-As cinco rodadas foram conferidas no navegador. Também foram conferidos
-áudio simulado, interrupção de fala, movimento reduzido e visual em celular.
+HeadAudio estima os formatos da boca a partir do áudio recebido por WebRTC,
+sem transcrição e sem enviar áudio a outro serviço. Essa estimativa não é uma
+sincronização fonética perfeita e o classificador é treinado para inglês.
+Se AudioWorklet não estiver disponível, a boca acompanha o volume da voz.
+Se WebGL falhar, o desenho SVG com o logo aparece e a conversa continua.
+O processamento 3D pausa fora da área visível. Login, microfone, HTTPS, contexto
+das aulas e o serviço de voz seguem as configurações existentes.
 
-Os arquivos ficam no servidor StudyIA; não há CDN, serviço de avatar externo
-nem cobrança adicional por minuto de animação. O arquivo humano tem cerca
-de 9,5 MB e é compartilhado pelos dois personagens. A voz continua usando a
-OpenAI e sua cobrança habitual. Não é necessário instalar GPU na VM:
-o processamento gráfico e de animação ocorre no computador do aluno.
-
-HeadAudio estima formatos da boca a partir do áudio recebido por WebRTC,
-sem transcrição e sem enviar áudio a outro serviço. Essa estimativa não é
-sincronização fonética perfeita e é treinada para inglês. Se AudioWorklet
-estiver indisponível, a mandíbula acompanha o volume da voz. Se WebGL falhar,
-o desenho SVG é exibido e a conversa continua funcionando.
-
-O 3D pausa fora da área visível; o modo de movimento reduzido remove balanços
-de cabeça e braços. Microfone, permissões, login e contexto das aulas seguem
-a integração existente. HTTPS continua necessário para acesso ao microfone.
-
-Dependências são fixadas no package-lock.json. Three.js é dependência de
-produção. Sharp é usado somente na preparação dos arquivos (dependência de
-desenvolvimento) e não entra no container de produção. Licenças e origem
-dos arquivos: assets/teachers/NOTICE.md.
+A validação abrangeu as duas variantes, voz com áudio simulado, interrupção,
+liberação dos recursos, celular, movimento reduzido e ausência de WebGL.
+Uma conversa real com OpenAI depende de login, chave, permissões e rede do ambiente.
 
 ## Atualização na VM
 
@@ -60,7 +44,6 @@ docker compose up -d --build app proxy
 docker compose ps
 ```
 
-Atualize a página com Ctrl+F5 e abra Conversação. O modelo carrega antes de
-iniciar a conversa. Confira os dois professores; após entrar na conta,
-inicie a conversa normalmente. Não há nova variável de ambiente nem migração
-de banco nesta atualização.
+Atualize a página com Ctrl+F5 e abra Conversação. Não há nova variável de ambiente
+nem migração do banco. Dependências estão fixadas no package-lock.json. Licenças
+e origem dos arquivos: assets/teachers/NOTICE.md.

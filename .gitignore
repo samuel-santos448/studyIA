@@ -33,6 +33,7 @@ Thumbs.db
 
 # Local visual verification artifacts
 preview-*.png
+preview-*.webm
 verify-ui.cjs
 verify-curriculum.cjs
 verify-course-audit.cjs
