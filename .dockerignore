@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+node_modules
+.tools
+data
+recordings
+deploy/certs
+backups
+tests
+verify-*.cjs
+preview-*.png
+*.log
+*.pem
+*.key
+*.crt

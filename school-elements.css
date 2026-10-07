@@ -1,0 +1,22 @@
+/* Original school artwork is decorative: no pointer targets or extra reading order. */
+.module{position:relative;isolation:isolate;--school-art:url('assets/school/elementos-09.png')}
+.module:not(#home)::before{content:'';position:absolute;z-index:-1;pointer-events:none;top:18px;right:20px;width:clamp(90px,12vw,150px);height:150px;background:var(--school-art) center/contain no-repeat;opacity:.12}
+.module:not(#home)>h2{padding-right:95px}
+#catalog{--school-art:url('assets/school/elementos-01.png')}
+#units,#dictionary{--school-art:url('assets/school/elementos-10.png')}
+#studio,#numbers{--school-art:url('assets/school/elementos-06.png')}
+#conversation{--school-art:url('assets/school/elementos-02.png')}
+#vocabulary,#cafe{--school-art:url('assets/school/elementos-07.png')}
+#review,#exam{--school-art:url('assets/school/elementos-08.png')}
+#settings{--school-art:url('assets/school/elementos-05.png')}
+#account{--school-art:url('assets/school/elementos-04.png')}
+.hero::after{content:'';background:url('assets/school/elementos-06.png') center/contain no-repeat;width:230px;height:230px;right:30px;top:30px;opacity:.34;transform:rotate(-8deg)}
+.dashboard article,.daily-dashboard article,.flash-card,.teacher-entry{position:relative;isolation:isolate}
+.dashboard article::after,.daily-dashboard article::after{content:'';position:absolute;z-index:-1;pointer-events:none;right:16px;bottom:16px;width:78px;height:78px;background:url('assets/school/elementos-09.png') center/contain no-repeat;opacity:.13}
+.dashboard article:nth-child(2)::after{background-image:url('assets/school/elementos-10.png');opacity:.18}
+.daily-dashboard article:first-child::after{background-image:url('assets/school/elementos-07.png')}
+.daily-dashboard article:nth-child(2)::after{background-image:url('assets/school/elementos-06.png')}
+.teacher-entry::after{content:'';position:absolute;z-index:-1;pointer-events:none;right:14px;top:12px;width:60px;height:60px;background:url('assets/school/elementos-08.png') center/contain no-repeat;opacity:.1}
+.flash-card::after{content:'';position:absolute;z-index:-1;pointer-events:none;right:12px;bottom:12px;width:82px;height:82px;background:url('assets/school/elementos-01.png') center/contain no-repeat;opacity:.12}
+html[data-theme=dark] .module:not(#home)::before{opacity:.18}
+@media(max-width:700px){.module:not(#home)::before{width:76px;height:90px;right:12px;top:16px;opacity:.11}.module:not(#home)>h2{padding-right:56px}.hero::after{width:115px;height:115px;right:12px;top:12px;opacity:.18}.dashboard article::after,.daily-dashboard article::after{width:58px;height:58px;right:12px;bottom:12px}}

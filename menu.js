@@ -1,0 +1,20 @@
+'use strict';
+document.addEventListener('DOMContentLoaded',()=>{
+ const sidebar=document.querySelector('.sidebar'),header=document.querySelector('header');sidebar.id='main-menu';
+ const controls=document.createElement('div');controls.className='header-controls';controls.innerHTML='<button id="menu-toggle" class="icon-button" aria-controls="main-menu" aria-expanded="false" aria-label="Abrir menu">☰</button><a id="page-back" class="back-button" href="#home" aria-label="Voltar ao início">← <span>Voltar</span></a>';header.prepend(controls);
+ const menuContent=document.createElement('div');menuContent.className='menu-content';menuContent.append(...sidebar.childNodes);sidebar.append(menuContent);sidebar.prepend(controls.querySelector('#menu-toggle'));
+ const brand=menuContent.querySelector('.school-brand'),logoButton=sidebar.querySelector('#menu-toggle');logoButton.replaceChildren(brand.querySelector('img'));logoButton.className='menu-logo-button';logoButton.title='Abrir ou fechar menu';brand.remove();
+ document.querySelector('.mobile-school-brand')?.remove();
+ sidebar.querySelector('.sidebar-note')?.remove();
+ const badge=document.createElement('a');badge.id='session-user';badge.href='#account';badge.className='session-user';badge.textContent='Visitante';header.append(badge);
+ const backdrop=document.createElement('button');backdrop.className='menu-backdrop';backdrop.hidden=true;backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','Fechar menu');document.body.append(backdrop);
+ const toggle=document.querySelector('#menu-toggle'),mobile=matchMedia('(max-width:700px)');let expanded=false;
+ sidebar.querySelectorAll('nav a').forEach(link=>{const name=link.querySelector('span')?.textContent||link.textContent.trim();link.setAttribute('aria-label',name);link.title=name;});
+ let lessonFocused=false;
+ function apply(){document.body.classList.toggle('lesson-focused',lessonFocused);sidebar.hidden=lessonFocused;sidebar.inert=lessonFocused;document.body.classList.toggle('menu-collapsed',!expanded);document.body.classList.toggle('menu-open',!lessonFocused&&expanded&&mobile.matches);toggle.setAttribute('aria-expanded',String(!lessonFocused&&expanded));toggle.setAttribute('aria-label',expanded?'Fechar menu':'Abrir menu');backdrop.hidden=lessonFocused||!(expanded&&mobile.matches);menuContent.inert=lessonFocused||(mobile.matches&&!expanded);if(menuContent.inert)menuContent.setAttribute('aria-hidden','true');else menuContent.removeAttribute('aria-hidden');}
+ function close(){expanded=false;apply();toggle.focus();}
+ toggle.addEventListener('click',()=>{expanded=!expanded;apply();if(expanded&&mobile.matches)sidebar.querySelector('nav a')?.focus();});backdrop.addEventListener('click',close);sidebar.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{if(mobile.matches)close();}));mobile.addEventListener('change',()=>{expanded=false;apply();});
+ document.addEventListener('keydown',e=>{if(!expanded||!mobile.matches)return;if(e.key==='Escape'){e.preventDefault();close();}if(e.key==='Tab'){const items=[toggle,...sidebar.querySelectorAll('a')],first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+ function update(){const route=location.hash.slice(1).split('?')[0]||'home';const focused=['units','catalog','learning','lesson','numbers','cafe','exam'].includes(route);document.querySelector('#page-back').hidden=route==='home';if(focused!==lessonFocused){const menuHadFocus=sidebar.contains(document.activeElement);lessonFocused=focused;expanded=false;apply();if(focused&&menuHadFocus)document.querySelector('#page-back').focus();}document.querySelector('#page-back').hidden=route==='home';const user=globalThis.StudyAccount?.user?.();badge.textContent=user?(user.email==='admin@studyia.local'?'admin':user.name):'Visitante · Entrar';badge.title=user?user.email:'Entre para carregar seu progresso pessoal';}
+ window.addEventListener('hashchange',update);document.addEventListener('studyia:account',update);apply();update();
+});

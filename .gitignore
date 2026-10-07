@@ -1,0 +1,44 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+deploy/certs/
+backups/
+
+# Dependencies and generated output
+node_modules/
+dist/
+build/
+coverage/
+.next/
+.venv/
+__pycache__/
+
+# Local data and recordings
+data/local/
+data/local-dev/
+verify-home-brand.cjs
+verify-teacher.cjs
+verify-access-menu.cjs
+verify-school-elements.cjs
+recordings/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Local visual verification artifacts
+preview-*.png
+verify-ui.cjs
+verify-curriculum.cjs
+verify-course-audit.cjs
+verify-assessment.cjs
+.tools/
+verify-company.cjs
+verify-dictionary.cjs
+verify-neutral-cards.cjs
+verify-menu-icons.cjs

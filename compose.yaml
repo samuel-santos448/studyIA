@@ -1,0 +1,79 @@
+name: studyia
+x-app: &app
+  image: studyia-local:latest
+  build: .
+  init: true
+  environment: &app-env
+    NODE_ENV: production
+    HOST: 0.0.0.0
+    PORT: "3000"
+    PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?Set PUBLIC_ORIGIN}
+    DATABASE_URL: postgresql://studyia:${DB_PASSWORD:?Set DB_PASSWORD}@db:5432/studyia
+    DATABASE_TLS: require
+    DATABASE_CA_FILE: /run/certs/ca.crt
+    OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    OPENAI_MODEL: ${OPENAI_MODEL:-}
+    OPENAI_REALTIME_MODEL: ${OPENAI_REALTIME_MODEL:-gpt-realtime-2.1}
+    OPENAI_TTS_MODEL: ${OPENAI_TTS_MODEL:-gpt-4o-mini-tts}
+    AZURE_SPEECH_KEY: ${AZURE_SPEECH_KEY:-}
+    AZURE_SPEECH_REGION: ${AZURE_SPEECH_REGION:-}
+  volumes:
+    - ./deploy/certs/ca.crt:/run/certs/ca.crt:ro,z
+  networks: [database, web]
+  security_opt: [no-new-privileges:true]
+  read_only: true
+  tmpfs: [/tmp]
+services:
+  db:
+    image: postgres:18-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: studyia
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Set POSTGRES_ADMIN_PASSWORD}
+      APP_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD}
+    # Copy TLS material so PostgreSQL owns its private key with mode 0600.
+    command: ["sh", "-c", "cp /run/tls/server.key /tmp/db.key && cp /run/tls/server.crt /tmp/db.crt && chown postgres:postgres /tmp/db.key /tmp/db.crt && chmod 600 /tmp/db.key && exec docker-entrypoint.sh postgres -c ssl=on -c ssl_cert_file=/tmp/db.crt -c ssl_key_file=/tmp/db.key"]
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./deploy/docker/init-db.sh:/docker-entrypoint-initdb.d/01-studyia.sh:ro,z
+      - ./deploy/certs/server.key:/run/tls/server.key:ro,z
+      - ./deploy/certs/server.crt:/run/tls/server.crt:ro,z
+    networks: [database]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres -d studyia"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  migrate:
+    <<: *app
+    command: [node, backend/migrate.mjs]
+    depends_on:
+      db: {condition: service_healthy}
+  app:
+    <<: *app
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  proxy:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "${LAN_IP:?Set the private LAN_IP}:${HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./deploy/docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro,z
+      - ./deploy/certs/server.crt:/etc/nginx/tls/server.crt:ro,z
+      - ./deploy/certs/server.key:/etc/nginx/tls/server.key:ro,z
+    networks: [web]
+    depends_on:
+      app: {condition: service_healthy}
+networks:
+  database: {internal: true}
+  web: {}
+volumes:
+  postgres_data: {}
