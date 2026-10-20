@@ -1,3 +1,4 @@
+import {liveTranscription} from './backend/live-transcription.mjs';
 import {claudeVoice} from './backend/claude-voice.mjs';
 import {sameOrigin,publicOrigin,allowedHost} from './backend/http-security.mjs';
 import {conversationPolicy} from './backend/teaching.mjs';
@@ -41,6 +42,7 @@ export function createApp({anthropicKey=process.env.ANTHROPIC_API_KEY||'',anthro
  ['assessment.js','journey-store.js','assessment-ui.js','assessment.css'].forEach(file=>files.add(file));
  let speechActive=0,speechCount=0,speechWindow=Date.now();
  let count=0, windowStart=Date.now(), active=0;
+ const liveInput=liveTranscription({apiKey,model:process.env.OPENAI_LIVE_TRANSCRIBE_MODEL||'gpt-live-transcribe',auth:company?.auth,fetchImpl});files.add('live-transcription.mjs');
  const claudeSession=claudeVoice({key:anthropicKey,model:anthropicModel,apiKey,transcribeModel,ttsModel,fetchImpl,auth:company?.auth});files.add('claude-voice.mjs');files.add('speech-stream.mjs');files.add('voice-playback.mjs');files.add('claude-audio-stream.mjs');
  const configured=Boolean(apiKey && model);const voiceSession=realtime({apiKey,model:realtimeModel,fetchImpl,auth:company?.auth});files.add('realtime-ui.js');files.add('realtime.css');files.add('natural-voice.js');const naturalSpeech=speechAudio({apiKey,model:ttsModel,fetchImpl,auth:company?.auth});
  function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));}
@@ -54,6 +56,7 @@ export function createApp({anthropicKey=process.env.ANTHROPIC_API_KEY||'',anthro
   if(!company&&url.pathname==='/api/company/session')return json(res,200,{available:false,user:null,company:null,setupRequired:false});
   if(!company&&url.pathname.startsWith('/api/company/'))return json(res,503,{error:'Configure PostgreSQL e execute as migrações para ativar contas.'});
   if(company&&await company.handle(req,res,url,json))return;
+  if(await liveInput(req,res,url,json))return;
   if(await claudeSession(req,res,url,json))return;
   if(await voiceSession(req,res,url,json))return;if(await naturalSpeech(req,res,url,json))return;
   if(url.pathname==='/api/status'&&req.method==='GET')return json(res,200,{configured});

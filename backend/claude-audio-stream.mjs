@@ -17,7 +17,7 @@ export async function streamClaudeAudio(response,{res,session,apiKey,ttsModel,fe
   if(data.type==='message_delta')stopReason=data.delta?.stop_reason;
   if(data.type==='message_stop'){completed=true;return;}
   if(data.type!=='content_block_delta'||data.delta?.type!=='text_delta')return;
-  const delta=data.delta.text||'';text+=delta;pending+=delta;if(text.length>3000)throw new HttpError(502,'A resposta ficou longa demais.');
+  const delta=data.delta.text||'';text+=delta;pending+=delta;session.partialReply=spokenText(text);if(text.length>3000)throw new HttpError(502,'A resposta ficou longa demais.');
   // Require a complete phrase; avoid synthesizing individual tokens/words.
   const boundary=pending.match(/^([\s\S]{18,}?[.!?](?:["”']?)(?=\s|$))/);
   if(boundary){const phrase=boundary[1];pending=pending.slice(phrase.length);await voice(phrase);}

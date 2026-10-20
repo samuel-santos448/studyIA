@@ -39,14 +39,16 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
     if(body.topic!==undefined&&!Object.hasOwn(topics,body.topic))throw new HttpError(400,'Tema inválido.');
     session={owner,character:body.character,speed:body.speed??1,id:randomUUID(),expiresAt:now()+20*60000,language:body.language,messages:[],system:`Você é ${body.character==='zezinho'?'Zezinho':'Mariazinha'}, professor de ${config[body.language].name} para brasileiros, nível ${lesson?.level||body.level}. Conduza prática interativa por pelo menos 16 minutos dentro de uma sessão de 20 minutos. Faça uma pergunta por vez e espere. Responda em 2 ou 3 frases curtas, em até 45 palavras. Escreva exclusivamente texto natural para ser falado: sem emojis, Markdown, asteriscos, títulos, listas ou separadores. Distribua explicações em vários turnos, em vez de dar uma aula longa em uma resposta. Alterne conversa, explicações e exemplos. Não encerre após poucas perguntas; respeite se o aluno pedir para parar. Não invente tempo decorrido, notas ou certificação. Você recebe transcrição de áudio, não o som original: não diagnostique pronúncia como se tivesse ouvido o aluno. Ofereça modelos de pronúncia e peça repetição se a transcrição for pouco clara. ${conversationPolicy(body.language)} ${body.practice==='listening'?'Apresente um trecho curto e pergunte sobre sua compreensão.':''} ${lesson?`Aula ${lesson.id}: ${lesson.title}. ${lesson.conversation.instructions} Exemplo: ${lesson.example.en}.`:topics[body.topic||'general']}`};
    }
-   let transcript='';
-   if(body.action==='turn'){
+   let transcript='';const hasText=body.action==='turn'&&body.text!==undefined;
+   if(hasText&&(typeof body.text!=='string'||!body.text.trim()||body.text.length>4000))throw new HttpError(400,'Fala inválida.');
+   if(body.action==='turn'&&!hasText){
     if(typeof body.audio!=='string'||body.audio.length>2_800_000||!body.audio.length||!/^[A-Za-z0-9+/]+={0,2}$/.test(body.audio)||!['audio/webm','audio/ogg','audio/mp4'].includes(body.mime))throw new HttpError(400,'Áudio inválido. Grave uma fala curta novamente.');
    }
    rate.count++;limits.set(owner,rate);busy.add(owner);
    try{
     const timings={transcribeMs:0,claudeMs:0};let phase=performance.now();
-    if(body.action==='turn'){
+    if(body.action==='turn'&&hasText)transcript=body.text.trim();
+    if(body.action==='turn'&&!hasText){
      const bytes=Buffer.from(body.audio,'base64');if(bytes.length<20||bytes.length>2_000_000)throw new HttpError(400,'Áudio inválido.');
      const form=new FormData();form.set('model',transcribeModel);form.set('file',new Blob([bytes],{type:body.mime}),'speech.'+({ 'audio/webm':'webm','audio/ogg':'ogg','audio/mp4':'mp4'}[body.mime]));
      const r=await fetchImpl('https://api.openai.com/v1/audio/transcriptions',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`},body:form,signal:AbortSignal.timeout(35000)});
@@ -61,7 +63,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
      timings.claudeMs=Math.round(performance.now()-phase);
      if(body.action==='start'){for(const [id,s] of sessions)if(s.owner===owner)sessions.delete(id);if(sessions.size>=1000)throw new HttpError(503,'Serviço ocupado.');sessions.set(session.id,session);}
      res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.flushHeaders();res.write(JSON.stringify({type:'meta',sessionId:session.id,expiresAt:session.expiresAt,transcript})+'\n');
-     const reply=await streamClaudeAudio(r,{res,session,apiKey,ttsModel,fetchImpl,signal:closed.signal});
+     session.partialReply='';let reply;try{reply=await streamClaudeAudio(r,{res,session,apiKey,ttsModel,fetchImpl,signal:closed.signal});}catch(e){if(closed.signal.aborted&&session.partialReply&&sessions.has(session.id))session.messages=[...messages,{role:'assistant',content:session.partialReply+' [Resposta interrompida; o aluno pode não ter ouvido tudo.]'}].slice(-40);throw e;}
      if(now()>=session.expiresAt||!sessions.has(session.id))throw new HttpError(409,'Esta conversa já foi encerrada.');
      timings.pipelineMs=Math.round(performance.now()-phase);session.messages=[...messages,{role:'assistant',content:reply}].slice(-40);sessions.set(session.id,session);res.end(JSON.stringify({type:'done',reply,timings})+'\n');return true;
     }

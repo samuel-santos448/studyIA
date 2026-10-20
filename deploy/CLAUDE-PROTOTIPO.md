@@ -49,3 +49,11 @@ Teste específico confirmou que o primeiro áudio sai antes do evento final do C
 ## Velocidade estável
 
 No modo Claude, as frases são sintetizadas em 0,85x. O navegador aplica playbackRate = velocidade escolhida / 0,85 com preservesPitch ligado, mantendo a velocidade efetiva de 0,7x, 0,85x ou 1x. Isso também vale para ouvir a resposta novamente. OpenAI Realtime permanece como antes. Se a reprodução não iniciar em 15 segundos, o turno apresenta um erro recuperável. Os testes no Edge validaram as três velocidades com MP3 sintético, sem chamadas reais às APIs.
+
+## Escuta contínua com Claude
+
+A entrada agora tenta uma conexão WebRTC persistente de transcrição, com modelo OPENAI_LIVE_TRANSCRIBE_MODEL (padrão gpt-live-transcribe), usando a chave OpenAI já configurada. O microfone envia áudio continuamente enquanto a escuta está ativa; o VAD local confirma uma fala após cerca de 180 ms e envia commit após 800 ms de silêncio. O texto final é enviado ao Claude diretamente, sem upload nem nova transcrição de arquivo. Ao detectar nova fala, o cliente interrompe a resposta e cancela o áudio restante, mantendo a sessão e o contexto parcial marcado como interrompido. A síntese continua progressiva por frases, com os avatares existentes.
+
+A interface mostra Escuta contínua ativa quando o canal conecta. Se não houver acesso ao modelo ou a conexão falhar, o cliente volta à gravação por turnos e identifica esse modo na tela. A duração permanece em 20 minutos. Pausar escuta desliga os tracks enviados, e encerrar fecha o WebRTC e desliga tanto o track original quanto seu clone. Recomenda-se testar interrupções com fones para reduzir a influência do áudio do professor no microfone.
+
+Transcrição e voz usam créditos OpenAI; respostas usam créditos Anthropic. A implementação não transforma Claude em um modelo nativo speech-to-speech e não promete igualdade de latência. Verificação: autenticação/CSRF no endpoint SDP, transcrição textual sem chamada de arquivo, e navegador com WebRTC/transcrição simulados validando interrupção pela fala, novo turno com texto, reprodução e fechamento dos tracks. Nenhuma chave real foi usada. É necessário validar acesso ao modelo e latência no servidor.
