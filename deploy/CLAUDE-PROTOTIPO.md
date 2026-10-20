@@ -45,3 +45,7 @@ Teste de streaming: o servidor entregou os primeiros bytes antes de completar a 
 O navegador solicita liveAudio no turno autenticado. O servidor consome deltas SSE do Claude, encontra frases completas e começa a síntese de voz antes de terminar o texto inteiro. Metadados, texto e bytes MP3 são enviados em eventos NDJSON; o navegador transforma o áudio em um fluxo contínuo para o player existente. O histórico definitivo só é atualizado após completar a resposta. Cancelar a transmissão interrompe as solicitações ainda em andamento. A rota JSON anterior permanece compatível para clientes antigos e testes.
 
 Teste específico confirmou que o primeiro áudio sai antes do evento final do Claude; a interface foi verificada com MP3 sintético e transcrição simulada, incluindo envio de fala, pausa, retomada e reinício. O fluxo ainda precisa da transcrição da fala e da primeira frase do modelo; não é a API nativa de áudio bidirecional. A velocidade real depende dos três serviços e da rede.
+
+## Velocidade estável
+
+No modo Claude, as frases são sintetizadas em 0,85x. O navegador aplica playbackRate = velocidade escolhida / 0,85 com preservesPitch ligado, mantendo a velocidade efetiva de 0,7x, 0,85x ou 1x. Isso também vale para ouvir a resposta novamente. OpenAI Realtime permanece como antes. Se a reprodução não iniciar em 15 segundos, o turno apresenta um erro recuperável. Os testes no Edge validaram as três velocidades com MP3 sintético, sem chamadas reais às APIs.

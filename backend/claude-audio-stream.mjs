@@ -7,7 +7,7 @@ export async function streamClaudeAudio(response,{res,session,apiKey,ttsModel,fe
  let text='',pending='',stopReason=null,completed=false,voices=0;
  const voice=async phrase=>{
   const input=spokenText(phrase);if(!input)return;send({type:'text',text:spokenText(text)});if(++voices>8)throw new HttpError(502,'A resposta ficou longa demais.');
-  const r=await fetchImpl('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify({model:ttsModel,input,voice:session.character==='zezinho'?'cedar':'marin',response_format:'mp3',speed:session.speed,instructions:'Leia exatamente o texto com voz natural de professor. Preserve o idioma de cada frase, inclusive português. Não acrescente nada.'}),signal:AbortSignal.any([signal,AbortSignal.timeout(45000)])});
+  const r=await fetchImpl('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json'},body:JSON.stringify({model:ttsModel,input,voice:session.character==='zezinho'?'cedar':'marin',response_format:'mp3',speed:.85,instructions:'Leia exatamente o texto com voz natural de professor. Preserve o idioma de cada frase, inclusive português. Não acrescente nada.'}),signal:AbortSignal.any([signal,AbortSignal.timeout(45000)])});
   if(!r.ok||!r.body)throw new HttpError(502,'Não foi possível gerar uma parte da voz. Tente ouvir a resposta novamente.');
   let size=0;for await(const bytes of r.body){size+=bytes.length;if(size>2_000_000)throw new HttpError(502,'Áudio muito longo.');send({type:'audio',data:Buffer.from(bytes).toString('base64')});}
   if(!size)throw new HttpError(502,'O serviço de voz retornou áudio vazio.');

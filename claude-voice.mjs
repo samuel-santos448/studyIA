@@ -1,3 +1,4 @@
+import {synthesisSpeed,setListeningSpeed,startAudio} from './voice-playback.mjs';
 import {readClaudeAudio} from './claude-audio-stream.mjs';
 import {attachSpeechStream} from './speech-stream.mjs';
 export function mountClaudeVoice({card,options,avatar,state,onActivity}){
@@ -28,12 +29,13 @@ export function mountClaudeVoice({card,options,avatar,state,onActivity}){
  }
  async function play(text,current,repeat=false,preparedAudio=null){
   if(text)pendingReply=text;busy=true;controls();if(text&&!repeat)log(options().character==='zezinho'?'Zezinho':'Mariazinha',text);state('thinking');waiting(preparedAudio?'Preparando a primeira frase…':'Gerando a voz…');if(!preparedAudio)abort=new AbortController();const o=options();
-  const r=preparedAudio||await fetch('/api/speech',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':StudyAccount.csrf()},body:JSON.stringify({text,character:o.character,language:o.language,speed:o.speed,stream:true}),signal:abort.signal});
+  const r=preparedAudio||await fetch('/api/speech',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':StudyAccount.csrf()},body:JSON.stringify({text,character:o.character,language:o.language,speed:synthesisSpeed,stream:true}),signal:abort.signal});
   if(!r.ok){const d=await r.json();const e=Error(d.error||'Não foi possível gerar a voz.');e.status=r.status;throw e;}if(!running||current!==version){r.body?.cancel();return;}audioStream?.dispose();audioStream=await attachSpeechStream(audio,r,{signal:abort.signal,onError:e=>{if(current===version)recover(e);}});
+  setListeningSpeed(audio,o.speed);
   if(!source){source=context.createMediaElementSource(audio);source.connect(context.destination);meter=context.createAnalyser();meter.fftSize=256;source.connect(meter);Promise.resolve(avatar()?.connectAudio(context,source)).catch(()=>{});}
   if(!running||current!==version)return;if(paused){busy=false;controls();state('muted');status.textContent='Resposta pronta. Clique em Ouvir resposta novamente.';return;}state('thinking');waiting('Recebendo áudio…');$('[data-talk]').textContent='Interromper e falar';
   const values=new Uint8Array(meter.fftSize);const animate=()=>{if(!running||current!==version||audio.paused)return;meter.getByteTimeDomainData(values);let sum=0;for(const n of values)sum+=((n-128)/128)**2;avatar()?.setEnergy(Math.sqrt(sum/values.length));frame=requestAnimationFrame(animate);};
-  audio.onended=()=>{pendingReply=null;controls();cancelAnimationFrame(frame);avatar()?.setEnergy(0);state('listening');if(!paused)listen();else{state('muted');status.textContent='Escuta pausada.';}};audio.onerror=()=>{if(current===version)recover(Error('A reprodução do áudio falhou.'));};await audio.play();if(current!==version||!running)return;busy=false;state('speaking');status.textContent='Professor falando. Você pode interromper e falar.';controls();animate();
+  audio.onended=()=>{pendingReply=null;controls();cancelAnimationFrame(frame);avatar()?.setEnergy(0);state('listening');if(!paused)listen();else{state('muted');status.textContent='Escuta pausada.';}};audio.onerror=()=>{if(current===version)recover(Error('A reprodução do áudio falhou.'));};await startAudio(audio,{signal:abort.signal});if(current!==version||!running)return;busy=false;state('speaking');status.textContent='Professor falando. Você pode interromper e falar.';controls();animate();
  }
  $('[data-start]').onclick=async()=>{
   if(running||!configured||!logged())return;if(!isSecureContext||!navigator.mediaDevices?.getUserMedia||!globalThis.MediaRecorder){status.textContent='Use HTTPS e um navegador com gravação de áudio.';return;}
