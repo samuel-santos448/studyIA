@@ -1,3 +1,4 @@
+import {spokenText} from './spoken-text.mjs';
 import {randomUUID} from 'node:crypto';
 import {sameOrigin} from './http-security.mjs';
 import {HttpError} from './accounts.mjs';
@@ -34,7 +35,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
     if(body.lessonId!==undefined&&!lesson)throw new HttpError(400,'Aula não encontrada.');
     const topics={general:'Situações do dia a dia.',introductions:'Apresentação pessoal.',numbers:'Números e horários.',cafe:'Na cafeteria.',vocabulary:'Vocabulário contextualizado.'};
     if(body.topic!==undefined&&!Object.hasOwn(topics,body.topic))throw new HttpError(400,'Tema inválido.');
-    session={owner,id:randomUUID(),expiresAt:now()+20*60000,language:body.language,messages:[],system:`Você é ${body.character==='zezinho'?'Zezinho':'Mariazinha'}, professor de ${config[body.language].name} para brasileiros, nível ${lesson?.level||body.level}. Conduza prática interativa por pelo menos 16 minutos dentro de uma sessão de 20 minutos. Faça uma pergunta por vez e espere. Responda em 2 a 4 frases curtas, em até 60 palavras. Distribua explicações em vários turnos, em vez de dar uma aula longa em uma resposta. Alterne conversa, explicações e exemplos. Não encerre após poucas perguntas; respeite se o aluno pedir para parar. Não invente tempo decorrido, notas ou certificação. Você recebe transcrição de áudio, não o som original: não diagnostique pronúncia como se tivesse ouvido o aluno. Ofereça modelos de pronúncia e peça repetição se a transcrição for pouco clara. ${conversationPolicy(body.language)} ${body.practice==='listening'?'Apresente um trecho curto e pergunte sobre sua compreensão.':''} ${lesson?`Aula ${lesson.id}: ${lesson.title}. ${lesson.conversation.instructions} Exemplo: ${lesson.example.en}.`:topics[body.topic||'general']}`};
+    session={owner,id:randomUUID(),expiresAt:now()+20*60000,language:body.language,messages:[],system:`Você é ${body.character==='zezinho'?'Zezinho':'Mariazinha'}, professor de ${config[body.language].name} para brasileiros, nível ${lesson?.level||body.level}. Conduza prática interativa por pelo menos 16 minutos dentro de uma sessão de 20 minutos. Faça uma pergunta por vez e espere. Responda em 2 ou 3 frases curtas, em até 45 palavras. Escreva exclusivamente texto natural para ser falado: sem emojis, Markdown, asteriscos, títulos, listas ou separadores. Distribua explicações em vários turnos, em vez de dar uma aula longa em uma resposta. Alterne conversa, explicações e exemplos. Não encerre após poucas perguntas; respeite se o aluno pedir para parar. Não invente tempo decorrido, notas ou certificação. Você recebe transcrição de áudio, não o som original: não diagnostique pronúncia como se tivesse ouvido o aluno. Ofereça modelos de pronúncia e peça repetição se a transcrição for pouco clara. ${conversationPolicy(body.language)} ${body.practice==='listening'?'Apresente um trecho curto e pergunte sobre sua compreensão.':''} ${lesson?`Aula ${lesson.id}: ${lesson.title}. ${lesson.conversation.instructions} Exemplo: ${lesson.example.en}.`:topics[body.topic||'general']}`};
    }
    let transcript='';
    if(body.action==='turn'){
@@ -55,7 +56,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
     const r=await fetchImpl('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':key,'anthropic-version':'2023-06-01','Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:450,system:session.system,messages}),signal:AbortSignal.timeout(40000)});
     if(!r.ok)throw new HttpError(r.status===429?429:502,'Claude não respondeu. Confira créditos, modelo e configuração no servidor.');
     timings.claudeMs=Math.round(performance.now()-phase);
-    const data=await r.json();const reply=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim();
+    const data=await r.json();const reply=spokenText((data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n'));
     if(!reply||reply.length>3000||data.stop_reason==='max_tokens')throw new HttpError(502,'A resposta do professor ficou incompleta. Tente novamente.');
     if(now()>=session.expiresAt||body.action==='turn'&&!sessions.has(session.id))throw new HttpError(409,'Esta conversa já foi encerrada.');
     session.messages=[...messages,{role:'assistant',content:reply}].slice(-40);

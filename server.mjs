@@ -41,7 +41,7 @@ export function createApp({anthropicKey=process.env.ANTHROPIC_API_KEY||'',anthro
  ['assessment.js','journey-store.js','assessment-ui.js','assessment.css'].forEach(file=>files.add(file));
  let speechActive=0,speechCount=0,speechWindow=Date.now();
  let count=0, windowStart=Date.now(), active=0;
- const claudeSession=claudeVoice({key:anthropicKey,model:anthropicModel,apiKey,transcribeModel,ttsModel,fetchImpl,auth:company?.auth});files.add('claude-voice.mjs');
+ const claudeSession=claudeVoice({key:anthropicKey,model:anthropicModel,apiKey,transcribeModel,ttsModel,fetchImpl,auth:company?.auth});files.add('claude-voice.mjs');files.add('speech-stream.mjs');
  const configured=Boolean(apiKey && model);const voiceSession=realtime({apiKey,model:realtimeModel,fetchImpl,auth:company?.auth});files.add('realtime-ui.js');files.add('realtime.css');files.add('natural-voice.js');const naturalSpeech=speechAudio({apiKey,model:ttsModel,fetchImpl,auth:company?.auth});
  function json(res,status,body){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(body));}
  const server=http.createServer(async(req,res)=>{

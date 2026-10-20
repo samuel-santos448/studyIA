@@ -33,3 +33,9 @@ Atualize a branch main e execute `docker compose up -d --build --no-deps app`. P
 O analisador facial é conectado uma vez por sessão, sem bloquear a reprodução de áudio; a energia sonora serve de alternativa enquanto ele carrega. Respostas orientadas a 2–4 frases e até 60 palavras reduzem o trabalho de geração e síntese. A espera mostra segundos decorridos. Atualizações de conta que mantêm o usuário autenticado não encerram a sessão. O servidor retorna tempos de transcrição e Claude em milissegundos para permitir medir o serviço real; nenhum texto ou áudio é registrado em logs por esse mecanismo.
 
 Verificação com falhas simuladas: transcrição 422 e voz 503 mantiveram o identificador da conversa; repetir a voz, retomar, enviar novo turno e encerrar funcionaram sem erro no navegador. Um analisador de boca artificialmente bloqueado não impediu a reprodução. Sem medição com as chaves reais, não há promessa de latência em segundos.
+
+## Áudio progressivo
+
+O Claude recebe instruções para produzir texto falado, sem emojis ou Markdown. O texto é limpo antes da síntese. O endpoint de voz permite enviar MP3 progressivo, com limite de 45 segundos para a solicitação inteira e erro específico de timeout. O navegador usa MediaSource quando suporta MP3 e mantém fallback de arquivo completo sem pedir uma segunda síntese. A interrupção cancela o download restante. Os Nginx do repositório desativam buffering e encaminham X-Accel-Buffering para um eventual proxy externo. Recarregue o proxy após atualizar: docker compose exec -T proxy nginx -t e docker compose exec -T proxy nginx -s reload. Um Nginx externo personalizado também precisa permitir streaming.
+
+Teste de streaming: o servidor entregou os primeiros bytes antes de completar a geração simulada; no Edge, um MP3 sintético começou a tocar antes de chegar o restante dos bytes. Esses testes não medem a latência nem identificam retrospectivamente a causa da falha na API do servidor.
