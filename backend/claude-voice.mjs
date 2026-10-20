@@ -34,7 +34,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
     if(body.lessonId!==undefined&&!lesson)throw new HttpError(400,'Aula não encontrada.');
     const topics={general:'Situações do dia a dia.',introductions:'Apresentação pessoal.',numbers:'Números e horários.',cafe:'Na cafeteria.',vocabulary:'Vocabulário contextualizado.'};
     if(body.topic!==undefined&&!Object.hasOwn(topics,body.topic))throw new HttpError(400,'Tema inválido.');
-    session={owner,id:randomUUID(),expiresAt:now()+20*60000,language:body.language,messages:[],system:`Você é ${body.character==='zezinho'?'Zezinho':'Mariazinha'}, professor de ${config[body.language].name} para brasileiros, nível ${lesson?.level||body.level}. Conduza prática interativa por pelo menos 16 minutos dentro de uma sessão de 20 minutos. Faça uma pergunta por vez e espere. Responda em até 120 palavras, com frases curtas. Alterne conversa, explicações e exemplos. Não encerre após poucas perguntas; respeite se o aluno pedir para parar. Não invente tempo decorrido, notas ou certificação. Você recebe transcrição de áudio, não o som original: não diagnostique pronúncia como se tivesse ouvido o aluno. Ofereça modelos de pronúncia e peça repetição se a transcrição for pouco clara. ${conversationPolicy(body.language)} ${body.practice==='listening'?'Apresente um trecho curto e pergunte sobre sua compreensão.':''} ${lesson?`Aula ${lesson.id}: ${lesson.title}. ${lesson.conversation.instructions} Exemplo: ${lesson.example.en}.`:topics[body.topic||'general']}`};
+    session={owner,id:randomUUID(),expiresAt:now()+20*60000,language:body.language,messages:[],system:`Você é ${body.character==='zezinho'?'Zezinho':'Mariazinha'}, professor de ${config[body.language].name} para brasileiros, nível ${lesson?.level||body.level}. Conduza prática interativa por pelo menos 16 minutos dentro de uma sessão de 20 minutos. Faça uma pergunta por vez e espere. Responda em 2 a 4 frases curtas, em até 60 palavras. Distribua explicações em vários turnos, em vez de dar uma aula longa em uma resposta. Alterne conversa, explicações e exemplos. Não encerre após poucas perguntas; respeite se o aluno pedir para parar. Não invente tempo decorrido, notas ou certificação. Você recebe transcrição de áudio, não o som original: não diagnostique pronúncia como se tivesse ouvido o aluno. Ofereça modelos de pronúncia e peça repetição se a transcrição for pouco clara. ${conversationPolicy(body.language)} ${body.practice==='listening'?'Apresente um trecho curto e pergunte sobre sua compreensão.':''} ${lesson?`Aula ${lesson.id}: ${lesson.title}. ${lesson.conversation.instructions} Exemplo: ${lesson.example.en}.`:topics[body.topic||'general']}`};
    }
    let transcript='';
    if(body.action==='turn'){
@@ -42,6 +42,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
    }
    rate.count++;limits.set(owner,rate);busy.add(owner);
    try{
+    const timings={transcribeMs:0,claudeMs:0};let phase=performance.now();
     if(body.action==='turn'){
      const bytes=Buffer.from(body.audio,'base64');if(bytes.length<20||bytes.length>2_000_000)throw new HttpError(400,'Áudio inválido.');
      const form=new FormData();form.set('model',transcribeModel);form.set('file',new Blob([bytes],{type:body.mime}),'speech.'+({ 'audio/webm':'webm','audio/ogg':'ogg','audio/mp4':'mp4'}[body.mime]));
@@ -49,9 +50,11 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
      if(!r.ok)throw new HttpError(502,'Não foi possível transcrever sua fala.');const data=await r.json();transcript=typeof data.text==='string'?data.text.trim():'';
      if(!transcript||transcript.length>4000)throw new HttpError(422,'Não identifiquei uma fala clara. Tente novamente.');
     }
+    timings.transcribeMs=Math.round(performance.now()-phase);phase=performance.now();
     const messages=[...session.messages,{role:'user',content:body.action==='start'?'Comece se apresentando brevemente e faça a primeira pergunta.':transcript}];
     const r=await fetchImpl('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':key,'anthropic-version':'2023-06-01','Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:450,system:session.system,messages}),signal:AbortSignal.timeout(40000)});
     if(!r.ok)throw new HttpError(r.status===429?429:502,'Claude não respondeu. Confira créditos, modelo e configuração no servidor.');
+    timings.claudeMs=Math.round(performance.now()-phase);
     const data=await r.json();const reply=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('\n').trim();
     if(!reply||reply.length>3000||data.stop_reason==='max_tokens')throw new HttpError(502,'A resposta do professor ficou incompleta. Tente novamente.');
     if(now()>=session.expiresAt||body.action==='turn'&&!sessions.has(session.id))throw new HttpError(409,'Esta conversa já foi encerrada.');
@@ -60,7 +63,7 @@ export function claudeVoice({key,model,apiKey,transcribeModel,ttsModel,fetchImpl
      for(const [id,s] of sessions)if(s.owner===owner)sessions.delete(id);
      if(sessions.size>=1000)throw new HttpError(503,'Serviço ocupado. Tente novamente em instantes.');
     }
-    sessions.set(session.id,session);json(res,200,{sessionId:session.id,expiresAt:session.expiresAt,transcript,reply});
+    sessions.set(session.id,session);json(res,200,{sessionId:session.id,expiresAt:session.expiresAt,transcript,reply,timings});
    }finally{busy.delete(owner);}
   }catch(e){json(res,e instanceof HttpError?e.status:502,{error:e instanceof HttpError?e.message:'Não foi possível conversar com o Claude. Tente novamente.'});}
   return true;
