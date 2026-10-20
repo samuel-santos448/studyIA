@@ -11,6 +11,9 @@ x-app: &app
     DATABASE_URL: postgresql://studyia:${DB_PASSWORD:?Set DB_PASSWORD}@db:5432/studyia
     DATABASE_TLS: require
     DATABASE_CA_FILE: /run/certs/ca.crt
+    ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
+    OPENAI_TRANSCRIBE_MODEL: ${OPENAI_TRANSCRIBE_MODEL:-gpt-4o-mini-transcribe}
     OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     OPENAI_MODEL: ${OPENAI_MODEL:-}
     OPENAI_REALTIME_MODEL: ${OPENAI_REALTIME_MODEL:-gpt-realtime-2.1}

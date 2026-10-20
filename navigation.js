@@ -17,11 +17,13 @@
   const review=document.querySelector('#review');
   const reviewCard=document.createElement('article');reviewCard.className='review-home';reviewCard.innerHTML='<div><h3>Reforce o que você aprendeu</h3><p id="home-review-count">Nenhuma revisão pendente</p></div><a href="#review" class="button secondary">Revisar agora →</a>';home.append(reviewCard);
   const numbers = document.querySelector('#numbers');
+  const tobe = document.querySelector('#tobe');
   const units = document.createElement('section'); units.id = 'units'; units.className = 'module';
   units.innerHTML = `<p class="eyebrow">INGLÊS / NÍVEL A1</p><h2>Seu curso e práticas complementares.</h2><p>O curso completo segue aulas e provas em sequência. As atividades rápidas abaixo são práticas complementares.</p><div class="unit-list"><a class="unit-link" href="#lesson"><div><small>UNIDADE 01</small><h3>Hello, world!</h3><p>Saudações e apresentação pessoal</p></div><strong class="unit-count" id="unit-one-count"></strong></a><a class="unit-link" href="#numbers"><div><small>UNIDADE 02</small><h3>What time is it?</h3><p>Números de 1 a 12 e horários exatos</p></div><strong class="unit-count" id="unit-two-count"></strong></a></div>`;
   main.append(units);const courseLink=document.createElement('a');courseLink.href='#catalog';courseLink.className='button';courseLink.textContent='Explorar curso completo →';units.querySelector('h2').after(courseLink);
   const vocabulary=document.querySelector('#vocabulary');const vocabularyLink=document.createElement('a');vocabularyLink.href='#vocabulary';vocabularyLink.className='button secondary';vocabularyLink.textContent='Explorar vocabulário e cartões →';units.querySelector('h2').after(vocabularyLink);
   const cafe=document.querySelector('#cafe');const cafeLink=document.createElement('a');cafeLink.className='unit-link';cafeLink.href='#cafe';cafeLink.innerHTML='<div><small>UNIDADE 03</small><h3>A coffee, please.</h3><p>Pedidos, agradecimentos e preços</p></div><strong class="unit-count" id="unit-cafe-count"></strong>';units.querySelector('.unit-list').append(cafeLink);
+  const tobeLink=document.createElement('a');tobeLink.className='unit-link';tobeLink.href='#tobe';tobeLink.innerHTML='<div><small>GRAMÁTICA / A1</small><h3>Verbo to be</h3><p>Am, is e are · ser e estar em situações do dia a dia</p></div><strong class="unit-count" id="unit-tobe-count">0 de 8 exercícios nesta prática</strong>';units.querySelector('.unit-link').after(tobeLink);
   function cafeCount(){document.querySelector('#unit-cafe-count').textContent=cafe.querySelector('.quiz-progress').textContent;}document.addEventListener('studyia:progress',cafeCount);cafeCount();
   const trail = dashboard.querySelector('article:last-child');
   trail.innerHTML = '<small>SUA TRILHA</small><h2>900 aulas para explorar</h2><p>Inglês de A1 a C2 · 150 aulas por nível</p><a href="#catalog" class="button secondary">Explorar meu curso →</a>';
@@ -69,17 +71,17 @@
   const dictionaryLink=document.createElement('a');dictionaryLink.href='#dictionary';dictionaryLink.innerHTML='Aa <span>Dicionário</span>';sidebar.querySelector('nav').append(dictionaryLink);
   const accountLink=document.createElement('a');accountLink.href='#account';accountLink.innerHTML='♙ <span>Minha conta</span>';sidebar.querySelector('nav').append(accountLink);
   const catalog=document.querySelector("#catalog"),learning=document.querySelector("#learning");
-  const modules = {dictionary:document.querySelector('#dictionary'),account:document.querySelector("#account"),exam:document.querySelector("#exam"),catalog,learning,home, units, lesson, numbers, cafe, vocabulary, studio, conversation, review, settings};
-  const titles = {dictionary:'Dicionário inglês–português',account:'Conta e empresa',exam:'Sua avaliação',catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
+  const modules = {dictionary:document.querySelector('#dictionary'),account:document.querySelector("#account"),exam:document.querySelector("#exam"),catalog,learning,home, units, lesson, numbers, tobe, cafe, vocabulary, studio, conversation, review, settings};
+  const titles = {tobe:'Verbo to be',dictionary:'Dicionário inglês–português',account:'Conta e empresa',exam:'Sua avaliação',catalog:'Curso de inglês',learning:'Sua aula',home:'Seu aprendizado',units:'Sua trilha de inglês',lesson:'Aula · Hello, world!',numbers:'Aula · Números e horários',cafe:'Aula · Na cafeteria',vocabulary:'Vocabulário e cartões',studio:'Estúdio de prática',conversation:'Conversação guiada',review:'Sua revisão',settings:'Progresso e preferências'};
   function route() {
     const key = location.hash.slice(1).split('?')[0] || 'home'; const active = modules[key] ? key : 'home';
     pauseScene(); document.querySelectorAll('video,audio').forEach(media => media.pause()); document.dispatchEvent(new Event('studyia:navigate'));
     Object.entries(modules).forEach(([id, el]) => { el.hidden = id !== active; });
-    const navigationKey = ['exam','catalog','learning','lesson','numbers','cafe','vocabulary'].includes(active) ? 'units' : active;
+    const navigationKey = ['exam','catalog','learning','lesson','numbers','cafe','tobe','vocabulary'].includes(active) ? 'units' : active;
     sidebar.querySelectorAll('nav a').forEach(link => { if (link.hash === `#${navigationKey}`) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current'); });
     const currentLesson=active==='learning'?StudyCurriculum.get(new URLSearchParams(location.hash.split('?')[1]||'').get('lesson')):null;
     document.querySelector('.level-chip b').textContent=currentLesson?.level||(['catalog','units'].includes(active)?'A1–C2':'A1');
-    document.querySelector('#module-title').textContent = currentLesson?`Aula ${currentLesson.id}`:titles[active]; document.title = `${currentLesson?.title||titles[active]} — Escola Móbile | StudyIA`; window.scrollTo(0, 0);
+    document.querySelector('#module-title').textContent = currentLesson?`Aula ${currentLesson.id}`:titles[active]; document.title = 'StudyIA - Escola Mobile'; window.scrollTo(0, 0);
   }
   window.addEventListener('hashchange', route); route();
 })();

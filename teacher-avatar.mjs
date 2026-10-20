@@ -1,6 +1,5 @@
 import * as THREE from '/vendor/three.module.js';
 import {createTeacherMotion} from './teacher-motion.mjs';
-import {createTeacherCharacter} from './teacher-character.mjs';
 import {HeadAudio} from '/assets/teachers/vendor/headaudio.min.mjs';
 
 const clamp=THREE.MathUtils.clamp;
@@ -14,6 +13,7 @@ export async function createTeacherAvatar(stage){
  viewport.append(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(30,1,0.1,20);
  camera.position.set(0,1.60,1.40);camera.lookAt(0,1.565,0);
+ if(location.pathname==='/teacher-preview.html'){camera.position.set(0,1.55,1.10);camera.lookAt(0,1.54,0);}
  scene.add(new THREE.HemisphereLight(0xfff4e5,0x647a84,.95));
  const key=new THREE.DirectionalLight(0xffe9d3,3.3);key.position.set(-2,3,4);scene.add(key);
  const fill=new THREE.DirectionalLight(0xe3edff,.70);fill.position.set(2,1,3);scene.add(fill);
@@ -26,8 +26,9 @@ export async function createTeacherAvatar(stage){
  studio.traverse(o=>{o.geometry?.dispose();o.material?.dispose();});
  let schoolLogo,actor;
  try{
-  schoolLogo=await new THREE.TextureLoader().loadAsync('/school-logo.jpg');schoolLogo.colorSpace=THREE.SRGBColorSpace;schoolLogo.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
-  actor=createTeacherCharacter({logo:schoolLogo,environment:environment.texture});scene.add(actor.root);
+  const {createImportedTeacherCharacter}=await import('./teacher-imported.mjs');
+  actor=await createImportedTeacherCharacter();stage.dataset.model='imported';
+  scene.add(actor.root);
  }catch(error){schoolLogo?.dispose();environment.dispose();renderer.dispose();viewport.remove();throw error;}
  const size=()=>{const w=viewport.clientWidth||500,h=viewport.clientHeight||440;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();};
  const resize=new ResizeObserver(size);resize.observe(viewport);size();
@@ -40,7 +41,7 @@ export async function createTeacherAvatar(stage){
   viewport.setAttribute('aria-label',`${character==='zezinho'?'Professor Zezinho':'Professora Mariazinha'} em 3D`);actor.select(character);resetMouth();
  }
  select(character);
- stage.dataset.avatar='3d';stage.querySelector('.teacher-avatar').setAttribute('hidden','');
+ stage.dataset.avatar='3d';
  function render(now){
   if(disposed)return;frame=requestAnimationFrame(render);
   if(!visible||document.hidden){last=now;return;}if(now-last<1000/30)return;
@@ -53,7 +54,7 @@ export async function createTeacherAvatar(stage){
  frame=requestAnimationFrame(render);
  const api={
   select,
-  setState(value){if(disposed||state===value)return;state=value;if(value!=='speaking')resetMouth();},
+  setState(value){if(disposed||state===value)return;state=value;if(value==='listening'){(actor.releaseSpeech||actor.resetSpeech).call(actor);energy=0;}else if(value!=='speaking')resetMouth();},
   setEnergy(value){if(disposed)return;energy=clamp(value*15,0,1);},
   async connectAudio(context,source){
    if(disposed)return;api.disconnectAudio();const rev=++audioRevision;
@@ -68,8 +69,8 @@ export async function createTeacherAvatar(stage){
    }catch{if(rev===audioRevision)api.disconnectAudio();}
   },
   disconnectAudio(){audioRevision++;if(node){try{audioSource?.disconnect(node);}catch{}audioSource=null;node.onvalue=null;node.stop();node.disconnect();node.port.close();node=null;}resetMouth();},
-  dispose(){if(disposed)return;disposed=true;api.disconnectAudio();cancelAnimationFrame(frame);resize.disconnect();intersection.disconnect();actor.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)materials.add(o.material);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());schoolLogo.dispose();environment.dispose();renderer.dispose();viewport.remove();}
+  dispose(){if(disposed)return;disposed=true;api.disconnectAudio();cancelAnimationFrame(frame);resize.disconnect();intersection.disconnect();actor.dispose();const geometries=new Set(),materials=new Set();scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)materials.add(o.material);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());schoolLogo?.dispose();environment.dispose();renderer.dispose();viewport.remove();}
  };
- renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();api.dispose();stage.dataset.avatar='fallback';stage.querySelector('.teacher-avatar').removeAttribute('hidden');stage.querySelector('.avatar-loading').textContent='Visual simplificado. A conversa por voz continua disponível.';});
+ renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();api.dispose();stage.dataset.avatar='unavailable';stage.querySelector('.avatar-loading').textContent='O visual 3D foi interrompido. Recarregue a página para tentar novamente.';});
  return api;
 }

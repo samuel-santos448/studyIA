@@ -10,6 +10,7 @@ test('3D teachers load self-hosted assets without exposing arbitrary dependency 
   for(const path of ['/teacher-character.mjs','/teacher-face.mjs','/teacher-motion.mjs','/teacher-style.mjs','/teacher-avatar.mjs','/vendor/three.module.js','/vendor/three.core.js','/vendor/loaders/GLTFLoader.js','/vendor/utils/BufferGeometryUtils.js','/vendor/utils/SkeletonUtils.js','/assets/teachers/vendor/headaudio.min.mjs','/assets/teachers/vendor/headworklet.min.mjs']){
    const response=await fetch(base+path);assert.equal(response.status,200,path);assert.match(response.headers.get('content-type'),/javascript/);
   }
+  for(const asset of ['zezinho-facial.glb','mariazinha-preview.glb']){const r=await fetch(base+'/assets/teachers/'+asset);assert.equal(r.status,200);assert.equal(r.headers.get('content-type'),'model/gltf-binary');}
   const model=await fetch(base+'/assets/teachers/teacher-base.glb');assert.equal(model.status,200);assert.equal(model.headers.get('content-type'),'model/gltf-binary');
   assert.equal((await fetch(base+'/assets/teachers/vendor/model-en-mixed.bin')).status,200);
   const logo=await fetch(base+'/school-logo.jpg');assert.equal(logo.status,200);assert.equal(logo.headers.get('content-type'),'image/jpeg');
