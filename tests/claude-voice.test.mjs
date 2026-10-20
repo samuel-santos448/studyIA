@@ -39,3 +39,15 @@ test('Claude voice rejects another user and expires sessions at twenty minutes o
  who='bob';assert.equal((await post({action:'end',sessionId:first.data.sessionId})).status,404);assert.equal(calls,1);
  who='alice';clock+=20*60000;assert.equal((await post({action:'end',sessionId:first.data.sessionId})).status,404);assert.equal(calls,1);
 });
+
+test('progressive voice route sends authenticated metadata, audio and committed reply in order',async()=>{
+ const {claudeVoice}=await import('../backend/claude-voice.mjs');const {Readable}=await import('node:stream');const {EventEmitter}=await import('node:events');const sent=[];
+ const handler=claudeVoice({key:'claude-secret',model:'test',apiKey:'openai-secret',transcribeModel:'test',ttsModel:'test',auth:{requireUser:async()=>({user:{id:'alice'},csrf:'token'})},fetchImpl:async(url,o)=>{
+  const p=JSON.parse(o.body);sent.push(url);
+  if(url.endsWith('/audio/speech')){assert.equal(p.voice,'marin');return{ok:true,body:new ReadableStream({start(c){c.enqueue(Buffer.from('mp3'));c.close();}})};}
+  assert.equal(p.stream,true);return{ok:true,body:new ReadableStream({start(c){const events=[{type:'content_block_delta',delta:{type:'text_delta',text:'Welcome to class, Samuel! What is your job?'}},{type:'message_delta',delta:{stop_reason:'end_turn'}},{type:'message_stop'}];for(const e of events)c.enqueue(new TextEncoder().encode('data: '+JSON.stringify(e)+'\n\n'));c.close();}})};
+ }});
+ const req=Readable.from([JSON.stringify({action:'start',character:'mariazinha',language:'en',level:'A1',practice:'conversation',speed:.85,liveAudio:true})]);req.method='POST';req.headers={host:'localhost','content-type':'application/json','x-csrf-token':'token'};const res=new EventEmitter(),events=[];res.writeHead=(code,headers)=>{assert.equal(code,200);assert.match(headers['Content-Type'],/ndjson/);res.headersSent=true;};res.flushHeaders=()=>{};res.write=s=>{events.push(JSON.parse(s));return true;};res.end=s=>{if(s)events.push(JSON.parse(s));};
+ await handler(req,res,new URL('http://localhost/api/claude-voice'),()=>assert.fail('unexpected JSON response'));
+ assert.equal(events[0].type,'meta');assert.ok(events[0].sessionId);assert.ok(events.some(e=>e.type==='audio'));assert.equal(events.at(-1).type,'done');assert.match(events.at(-1).reply,/Samuel/);assert.ok(sent.some(u=>u.endsWith('/audio/speech')));assert.ok(!JSON.stringify(events).includes('secret'));
+});
