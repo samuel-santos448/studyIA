@@ -6,7 +6,9 @@ Preparado em 21 de outubro de 2026. Não enviado a fornecedores. Não há contra
 
 Plataforma educacional de idiomas da Escola Mobile, inicialmente para uso no Brasil. Confirmar território contratual antes de qualquer publicação. Curso de inglês A1–C2 com 900 aulas, 15 módulos por nível, cada módulo com dez aulas. Necessidade: 90 músicas diferentes, uma por módulo, sem reutilização. O repertório deve incluir artistas populares ouvidos no dia a dia, como Bruno Mars e Adele; os artistas são referências de curadoria, não uma declaração de disponibilidade ou aprovação de seu repertório inteiro.
 
-Solicitar proposta para um piloto de dez faixas e para o pacote completo de 90, incluindo mínimos contratuais e eventuais custos por usuário, reprodução, território ou chamada de API. Quantidade de alunos ativos, faixa etária, prazo e volume mensal de reprodução ainda precisam ser informados. Não há estimativa de custo confiável sem cotação.
+Público informado pela escola: 30 alunos por mês, com idades variadas a partir de 17 anos. Incluir alunos de 17 anos no escopo apresentado ao fornecedor. Essa idade mínima não altera as exclusões de conteúdo definidas para a biblioteca.
+
+Solicitar proposta para um piloto de dez faixas e para o pacote completo de 90, incluindo mínimos contratuais e eventuais custos por usuário, reprodução, território ou chamada de API. Pedir condições para uma escola com 30 alunos mensais, discriminando implantação, mensalidade mínima e custos variáveis. Prazo de contratação e volume mensal de reprodução ainda não foram definidos; solicitar simulações por faixas de uso, sem assumir consumo ilimitado. Não há estimativa de custo confiável sem cotação.
 
 ## Usos a confirmar expressamente na proposta
 
