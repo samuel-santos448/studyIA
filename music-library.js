@@ -23,6 +23,9 @@
  }];
  function published(song){return song.review?.status==='approved-ai'&&song.review.version===song.version&&song.review.policyVersion===policy.version&&song.rights?.status==='cleared'&&/^assets\/music\/[a-z0-9-]+\.mp3$/.test(song.audio?.path||'')&&song.lyrics?.length>0;}
  function list(){return songs.filter(published);}
+ const modules=['A1','A2','B1','B2','C1','C2'].flatMap(level=>Array.from({length:15},(_,i)=>({id:`${level}-${String(i+1).padStart(2,'0')}`,level,block:i+1,from:i*10+1,to:(i+1)*10,songId:null})));
+ function getModule(id){const entry=modules.find(m=>m.id===id);return entry?{...entry,song:list().find(s=>s.id===entry.songId)||null}:null;}
+ function afterLesson(id){const match=/^(A1|A2|B1|B2|C1|C2)-(\d{3})$/.exec(id||'');if(!match)return null;const n=Number(match[2]);if(n<10||n>150||n%10!==0)return null;return getModule(`${match[1]}-${String(n/10).padStart(2,'0')}`);}
  function search({query='',level='all'}={}){const normal=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();return list().filter(s=>(level==='all'||s.level===level)&&normal([s.title,s.artist,s.topic,...s.vocabulary.map(v=>v.en)].join(' ')).includes(normal(query.trim())));}
- const api={policy,songs,list,search,published};root.StudyMusicLibrary=api;if(typeof module!=='undefined')module.exports=api;
+ const api={policy,songs,list,search,published,modules,module:getModule,afterLesson};root.StudyMusicLibrary=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
