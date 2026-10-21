@@ -24,7 +24,7 @@ function speak(text, lang = globalThis.StudyLanguage?.speech||'en-US', onEnd) {
   utterance.onerror = event => { if (event.error !== 'canceled' && event.error !== 'interrupted') audioStatus.textContent = 'Não foi possível reproduzir. A disponibilidade das vozes depende do navegador.'; };
   speechSynthesis.speak(utterance);
 }
-function pauseScene() { clearTimeout(sceneTimer); sceneTimer = null; stopAudio(); document.querySelector('#scene-play').disabled = false; }
+function pauseScene() { document.dispatchEvent(new Event('studyia:audio-start')); clearTimeout(sceneTimer); sceneTimer = null; stopAudio(); document.querySelector('#scene-play').disabled = false; }
 document.querySelectorAll('.examples article').forEach(article => {
   const phrase = article.querySelector('strong').textContent;
   const button = document.createElement('button'); button.className = 'listen'; button.textContent = '🔊 Ouvir'; button.setAttribute('aria-label', `Ouvir ${phrase}`);
