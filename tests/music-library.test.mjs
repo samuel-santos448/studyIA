@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {readFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {createApp} from '../server.mjs';
+const Library=createRequire(import.meta.url)('../music-library.js');
+test('unreviewed, outdated and uncleared recordings cannot enter the music catalog',()=>{const song=Library.list()[0];assert.ok(song);for(const mutate of [s=>s.review.status='pending',s=>s.review.version++,s=>s.review.policyVersion++,s=>s.rights.status='pending',s=>s.audio.path='https://example.com/unreviewed.ogg',s=>s.lyrics=[]]){const altered=structuredClone(song);mutate(altered);assert.equal(Library.published(altered),false);}assert.equal(Library.search({query:'animais',level:'A1'}).length,1);assert.equal(Library.search({level:'C2'}).length,0);});
+test('the selected recording is pinned to the inspected audio and includes translation, credits and an answer from its lyrics',async()=>{for(const song of Library.list()){const bytes=await readFile(new URL('../'+song.audio.path,import.meta.url));assert.equal(bytes.subarray(0,3).toString(),'ID3');assert.equal(createHash('sha256').update(bytes).digest('hex'),song.audio.sha256);assert.ok(song.lyrics.every(l=>l.en&&l.pt));assert.ok(song.lyrics.some(l=>l.en.toLowerCase().includes(song.practice.answer)));assert.match(song.rights.source,/^https:\/\/commons.wikimedia.org\//);assert.match(song.review.note,/humana.*pendente/i);}});
+test('the server serves the selected audio and does not expose arbitrary music files',async t=>{const app=createApp();await new Promise(r=>app.listen(0,'127.0.0.1',r));t.after(()=>app.close());const base=`http://127.0.0.1:${app.address().port}`;const audio=await fetch(base+'/'+Library.list()[0].audio.path);assert.equal(audio.status,200);assert.equal(audio.headers.get('content-type'),'audio/mpeg');assert.equal((await fetch(base+'/assets/music/unreviewed.ogg')).status,404);assert.equal((await fetch(base+'/music-library-ui.js')).status,200);});
